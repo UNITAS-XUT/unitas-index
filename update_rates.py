@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 
 fx_url = "https://" + "open." + "er-api.com" + "/v6/latest/USD"
 pw_url = "https://" + "api.awattar.de" + "/v1/marketdata"
-copper_url = "https://" + "://yahoo.com" + "/v8/finance/chart/HG=F" + "?" + "interval=1d&range=5d"
-wheat_url = "https://" + "://yahoo.com" + "/v8/finance/chart/ZW=F" + "?" + "interval=1d&range=5d"
+copper_url = "https://" + "query1." + "finance." + "yahoo.com" + "/v8/finance/chart/HG=F" + "?" + "interval=1d&range=5d"
+wheat_url = "https://" + "query1." + "finance." + "yahoo.com" + "/v8/finance/chart/ZW=F" + "?" + "interval=1d&range=5d"
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 out = {

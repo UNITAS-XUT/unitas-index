@@ -377,7 +377,11 @@ function fetchLiveFeeds() {
                 populateCurrencyDropdowns(curFrom, curTo);
                 fxSt.textContent = i18n[currentLang].fxLive.replace("{n}", fxLiveCount);
                 fxSt.style.background = "#16a34a";
+            } else {
+                fxSt.textContent = i18n[currentLang].fxOffline;
+                fxSt.style.background = "#d97706";
             }
+            
             if (d && d.power_live && d.power_eur_mwh !== null) {
                 powerLiveAvg = d.power_eur_mwh;
                var powerItem = basket[0];
@@ -388,6 +392,9 @@ function fetchLiveFeeds() {
                 pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
                 pwSt.style.background = "#16a34a";
                 renderBasket();
+            } else {
+                pwSt.textContent = i18n[currentLang].pwOffline;
+                pwSt.style.background = "#d97706";
             }
             recalculate("xut");
         })

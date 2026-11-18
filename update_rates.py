@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 
 fx_url = "https://" + "open." + "er-api.com" + "/v6/latest/USD"
 pw_url = "https://" + "api.awattar.de" + "/v1/marketdata"
-copper_url = "https://" + "fred.stlouisfed.org" + "/graph/fredgraph.csv?id=PCOPPUSDM&cosd=2025-01-01"
-wheat_url = "https://" + "fred.stlouisfed.org" + "/graph/fredgraph.csv?id=PWHEAMTUSDM&cosd=2025-01-01"
+copper_url = "https://" + "stooq.com" + "/q/l/?s=hg.f&f=sd2t2ohlc&h&e=csv"
+wheat_url = "https://" + "stooq.com" + "/q/l/?s=zw.f&f=sd2t2ohlc&h&e=csv"
 headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"}
 
 out = {
@@ -21,24 +21,20 @@ out = {
 }
 excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
-def get_latest_fred_kg(url):
+def get_stooq_close(url):
     req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=45) as r:
+    with urllib.request.urlopen(req, timeout=15) as r:
         lines = r.read().decode("utf-8").strip().splitlines()
-    for line in reversed(lines):
-        parts = line.split(",")
-        if len(parts) == 2:
-            val_str = parts.pop().strip()
-            if val_str not in (".", "", "VALUE"):
-                try:
-                    return round(float(val_str) / 1000.0, 4)
-                except ValueError:
-                    continue
+    if len(lines) >= 2:
+        cols = lines.pop().split(",")
+        close_str = cols.pop().strip()
+        if close_str not in ("N/D", "", "Close"):
+            return float(close_str)
     return None
 
 try:
     req = urllib.request.Request(fx_url, headers=headers)
-    with urllib.request.urlopen(req, timeout=20) as r:
+    with urllib.request.urlopen(req, timeout=15) as r:
         fx = json.loads(r.read().decode("utf-8"))
     if isinstance(fx, dict) and "rates" in fx:
         out["rates"] = {k: v for k, v in fx["rates"].items() if k not in excluded}
@@ -48,7 +44,7 @@ except Exception as e:
 
 try:
     req = urllib.request.Request(pw_url, headers=headers)
-    with urllib.request.urlopen(req, timeout=20) as r:
+    with urllib.request.urlopen(req, timeout=15) as r:
         pw = json.loads(r.read().decode("utf-8"))
     if isinstance(pw, dict) and isinstance(pw.get("data"), list) and pw["data"]:
         prices = [x["marketprice"] for x in pw["data"] if isinstance(x.get("marketprice"), (int, float))]
@@ -59,17 +55,19 @@ except Exception as e:
     print("Power error:", e)
 
 try:
-    c_val = get_latest_fred_kg(copper_url)
-    if c_val and c_val > 0:
-        out["copper_usd_kg"] = c_val
+    # HG.F ist in US-Cent pro Pfund (1 kg = 2.20462 lbs)
+    c_cents_lb = get_stooq_close(copper_url)
+    if c_cents_lb and c_cents_lb > 0:
+        out["copper_usd_kg"] = round((c_cents_lb / 100.0) * 2.20462, 4)
         out["copper_live"] = True
 except Exception as e:
     print("Copper error:", e)
 
 try:
-    w_val = get_latest_fred_kg(wheat_url)
-    if w_val and w_val > 0:
-        out["wheat_usd_kg"] = w_val
+    # ZW.F ist in US-Cent pro Bushel (1 Bushel Weizen = 27.2155 kg)
+    w_cents_bu = get_stooq_close(wheat_url)
+    if w_cents_bu and w_cents_bu > 0:
+        out["wheat_usd_kg"] = round((w_cents_bu / 100.0) / 27.2155, 4)
         out["wheat_live"] = True
 except Exception as e:
     print("Wheat error:", e)

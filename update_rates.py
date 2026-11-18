@@ -1,0 +1,32 @@
+name: Update UNITAS Market Data
+
+on:
+  schedule:
+    - cron: "0 */6 * * *" # Aktualisiert alle 6 Stunden automatisch
+  workflow_dispatch:      # Erlaubt manuellen Start per Knopfdruck
+
+permissions:
+  contents: write
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run data aggregator
+        run: python update_rates.py
+
+      - name: Commit and push updated rates.json
+        run: |
+          git config user.name "UNITAS Index Bot"
+          git config user.email "bot@unitas-index.org"
+          git add rates.json
+          git diff --staged --quiet || git commit -m "chore: update live market data feeds"
+          git push

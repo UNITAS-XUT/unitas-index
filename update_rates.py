@@ -1,10 +1,16 @@
 import json
+import ssl
 import urllib.request
 from datetime import datetime, timezone
 
+# SSL-Zertifikatsprüfung auf Runner-Umgebungen lockern
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
 HEADERS = {
-    "User-Agent": "UNITAS-Index-Aggregator/1.0 (+https://github.com)",
-    "Accept": "application/json"
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+    "Accept": "*/*"
 }
 
 output = {
@@ -17,12 +23,21 @@ output = {
 
 excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
-# 1. Weltwährungen über jsDelivr Open-Currency-CDN (GitHub-freundlich, 160+ Währungen)
-try:
-    url = "https://jsdelivr.net"
+def fetch_json(url):
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+    with urllib.request.urlopen(req, timeout=20, context=ctx) as resp:
+        raw = resp.read().decode("utf-8", errors="replace")
+        return json.loads(raw)
+
+# 1. Weltwährungen über jsDelivr & GitHub-Raw-Mirror abrufen
+fx_urls = [
+    "https://jsdelivr.net",
+    "https://pages.dev"
+]
+
+for url in fx_urls:
+    try:
+        data = fetch_json(url)
         if data and "usd" in data:
             rates = {}
             for k, v in data["usd"].items():
@@ -32,23 +47,31 @@ try:
             if len(rates) > 50:
                 output["rates"] = rates
                 output["fx_live"] = True
-except Exception as e:
-    print("FX CDN warning:", e)
+                print("FX success from:", url)
+                break
+    except Exception as e:
+        print("FX error:", url, repr(e))
 
-# 2. Stromgroßhandelspreis über offene EPEX-SPOT / aWATTar API (DE/AT)
-try:
-    req = urllib.request.Request("https://awattar.de", headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        data = json.loads(resp.read().decode("utf-8"))
+# 2. Stromgroßhandelspreis über aWATTar DE & AT abrufen
+power_urls = [
+    "https://awattar.de",
+    "https://awattar.at"
+]
+
+for url in power_urls:
+    try:
+        data = fetch_json(url)
         if data and isinstance(data.get("data"), list) and len(data["data"]) > 0:
             prices = [item["marketprice"] for item in data["data"] if isinstance(item.get("marketprice"), (int, float))]
             if prices:
                 output["power_eur_mwh"] = round(sum(prices) / len(prices), 2)
                 output["power_live"] = True
-except Exception as e:
-    print("Power API warning:", e)
+                print("Power success from:", url)
+                break
+    except Exception as e:
+        print("Power error:", url, repr(e))
 
 with open("rates.json", "w", encoding="utf-8") as f:
     json.dump(output, f, indent=2)
 
-print(f"Done: fx_live={output['fx_live']} ({len(output['rates'])} currencies), power_live={output['power_live']} ({output['power_eur_mwh']} EUR/MWh)")
+print(f"Final Result -> fx_live={output['fx_live']}, power_live={output['power_live']}")

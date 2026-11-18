@@ -1,7 +1,7 @@
 {
-  "updated_utc": "2026-11-18 01:56 UTC",
+  "updated_utc": "2026-11-18 01:58 UTC",
   "fx_live": false,
-  "power_live": false,
+  "power_live": true,
   "rates": {},
-  "power_eur_mwh": null
+  "power_eur_mwh": 149.78
 }

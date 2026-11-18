@@ -30,10 +30,10 @@
         .box-panel.unitas-center { background: var(--accent-light); border: 2px solid var(--accent); }
         .box-panel label { display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
         .box-panel.unitas-center label { color: var(--primary); }
-        select, input[type="number"] { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 0.95rem; color: var(--text); background: white; }
+        select, input[type="text"] { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 0.95rem; color: var(--text); background: white; }
         select { margin-bottom: 8px; font-weight: 600; }
         .unitas-label-box { padding: 9px 10px; background: white; border: 1px solid #bae6fd; border-radius: 7px; font-weight: 700; font-size: 0.95rem; color: var(--accent); margin-bottom: 8px; text-align: center; }
-        input[type="number"] { font-weight: 700; font-size: 1.05rem; }
+        input[type="text"] { font-weight: 700; font-size: 1.05rem; }
         .rate-summary { background: #f1f5f9; padding: 12px 14px; border-radius: 8px; margin-top: 16px; font-size: 0.86rem; color: var(--text); }
         .savings-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 14px; border-radius: 8px; margin-top: 14px; font-size: 0.9rem; }
         .savings-highlight { color: var(--success); font-weight: 700; }
@@ -73,19 +73,19 @@
                 <div class="box-panel">
                     <label for="from-currency" id="ui-lbl-from">Ausgangswährung</label>
                     <select id="from-currency"></select>
-                    <input type="number" id="from-amount" value="100000" min="0" step="any">
+                    <input type="text" inputmode="decimal" id="from-amount" value="0">
                 </div>
                 <div class="arrow-sep">&#8644;</div>
                 <div class="box-panel unitas-center">
                     <label for="xut-amount" id="ui-lbl-xut">Kaufkraft-Anker</label>
                     <div class="unitas-label-box">UNITAS (XUT)</div>
-                    <input type="number" id="xut-amount" value="0" min="0" step="any">
+                    <input type="text" inputmode="decimal" id="xut-amount" value="0">
                 </div>
                 <div class="arrow-sep">&#8644;</div>
                 <div class="box-panel">
                     <label for="to-currency" id="ui-lbl-to">Zielwährung</label>
                     <select id="to-currency"></select>
-                    <input type="number" id="to-amount" value="0" min="0" step="any">
+                    <input type="text" inputmode="decimal" id="to-amount" value="0">
                 </div>
             </div>
             <div class="rate-summary" id="rate-summary"></div>
@@ -285,13 +285,32 @@ function getXutValueInUsd() {
     return total > 0 ? total : 0.0001;
 }
 
+function parseFormattedNumber(str) {
+    if (!str) return 0;
+    var cleaned = str.toString().replace(/\./g, "").replace(",", ".");
+    var val = parseFloat(cleaned);
+    return isNaN(val) ? 0 : val;
+}
+
 function fmt(num) {
-    return (!isFinite(num) || isNaN(num)) ? "0.00" : Number(num.toFixed(4)).toString();
+    if (!isFinite(num) || isNaN(num) || num === 0) return "0";
+    var rounded = Number(num.toFixed(4));
+    var parts = rounded.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return parts.length > 1 ? (parts[0] + "," + parts[1]) : parts[0];
+}
+
+function formatInputLive(inputEl) {
+    var raw = inputEl.value.replace(/[^0-9,]/g, "");
+    var parts = raw.split(",");
+    var intPart = parts[0].replace(/^0+(?=\d)/, "");
+    intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    inputEl.value = parts.length > 1 ? (intPart + "," + parts[1]) : intPart;
 }
 
 function recalculate(mode) {
     var t = i18n[currentLang];
-    var loc = currentLang === "de" ? "de-DE" : "en-US";
+    var loc = "de-DE";
     var xutUsd = getXutValueInUsd();
     var xutEur = xutUsd * (fxRatesPerUsd.EUR || 0.86);
     document.getElementById("basket-usd-total").textContent = t.basketTotal.replace("{usd}", xutUsd.toFixed(4)).replace("{eur}", xutEur.toFixed(4));
@@ -304,15 +323,18 @@ function recalculate(mode) {
     var usd = 0;
 
     if (mode === "from") {
-        usd = (parseFloat(fromInput.value) || 0) / fxRatesPerUsd[fromCurr];
+        formatInputLive(fromInput);
+        usd = parseFormattedNumber(fromInput.value) / fxRatesPerUsd[fromCurr];
         xutInput.value = fmt(usd / xutUsd);
         toInput.value = fmt(usd * fxRatesPerUsd[toCurr]);
     } else if (mode === "to") {
-        usd = (parseFloat(toInput.value) || 0) / fxRatesPerUsd[toCurr];
+        formatInputLive(toInput);
+        usd = parseFormattedNumber(toInput.value) / fxRatesPerUsd[toCurr];
         fromInput.value = fmt(usd * fxRatesPerUsd[fromCurr]);
         xutInput.value = fmt(usd / xutUsd);
     } else {
-        usd = (parseFloat(xutInput.value) || 0) * xutUsd;
+        if (document.activeElement === xutInput) formatInputLive(xutInput);
+        usd = parseFormattedNumber(xutInput.value) * xutUsd;
         fromInput.value = fmt(usd * fxRatesPerUsd[fromCurr]);
         toInput.value = fmt(usd * fxRatesPerUsd[toCurr]);
     }

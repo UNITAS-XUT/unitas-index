@@ -1,7 +1,7 @@
 # UNITAS (XUT) – Universal Trade & Asset Standard
 
-**Ein neutraler, realwirtschaftlicher Referenz- und Verrechnungsstandard für den globalen Handel**  
-*A Neutral, Real-Economy Reference and Settlement Standard for Global Trade*
+**A Neutral, Real-Economy Reference and Settlement Standard for Global Trade**  
+*Ein neutraler, realwirtschaftlicher Referenz- und Verrechnungsstandard für den globalen Handel*
 
 [![License: MIT](https://shields.io)](https://opensource.org)
 [![Status: Proof of Concept](https://shields.io)](https://github.io)
@@ -9,55 +9,14 @@
 ---
 
 ## 🌐 Live-Prototyp / Live Demo
-👉 **[Hier den interaktiven UNITAS (XUT) 3-Wege-Handelsrechner starten / Launch Live Calculator](https://unitas-xut.github.io/unitas-index/)**
+👉 **[Launch the Interactive UNITAS (XUT) 3-Way Trade Calculator](https://unitas-xut.github.io/unitas-index/)**
 
-Der zweisprachige Open-Source-Prototyp (`index.html`, umschaltbar zwischen 🇩🇪 Deutsch und 🇬🇧 Englisch) demonstriert:
-* **Bidirektionale 3-Wege-Umrechnung** zwischen über 150 Weltwährungen und dem realwirtschaftlichen Kaufkraft-Anker **UNITAS (XUT)**.
-* **Live-Marktdaten-Anbindung** an offizielle EZB-Devisenkurse und europäische Stromgroßhandelsbörsen (*Fraunhofer Energy-Charts*).
-* **Interaktive Index-Simulation** zum Testen von Produktivitätssprüngen sowie einen **B2B-Transaktionskostenvergleich**.
-
----
-
-# 🇩🇪 Whitepaper: Das UNITAS-System (XUT)
-
-## 1. Executive Summary
-Die zunehmende Vernetzung der Weltwirtschaft und der rasante Anstieg grenzüberschreitender Lieferketten erfordern moderne, kosteneffiziente und widerstandsfähige Abwicklungsmechanismen. Bestehende internationale Zahlungsstrukturen führen insbesondere im Handel mit aufstrebenden Schwellen- und Wachstumsmärkten häufig zu hohen Transaktionskosten, doppelten Währungsumrechnungen, Wechselkursrisiken sowie zur Bindung erheblicher Kapitalmittel in Fremdwährungsreserven.
-
-Das **UNITAS-System** (**U**niversal **T**rade & **A**sset **S**tandard, ISO-konformes Kürzel: **XUT**) bietet hierfür eine **ergänzende, rein marktwirtschaftliche Infrastruktur**, ohne bestehende nationale Währungen zu ersetzen oder in die freie Preisbildung einzugreifen. Es kombiniert **ein transparentes, realwirtschaftliches Kaufkraft-Referenzmaß (1 Unitas / 1 XUT)** mit **einer dezentralen, bilanzlosen Verrechnungsplattform**.
+The prototype demonstrates:
+* **Bidirectional 3-way conversion** across 150+ world currencies and the real-economy purchasing power anchor **UNITAS (XUT)**.
+* **Live market data connectivity** to official ECB foreign exchange rates and European wholesale power exchanges (*Fraunhofer Energy-Charts*).
+* **Interactive index simulation** to test productivity gains alongside a **B2B transaction cost comparison**.
 
 ---
-
-## 2. Das Kernprinzip: Strikte Trennung von Maßstab, Zahlung und Markt
-* **Der Unitas (XUT) als objektives Referenzmaß:** Der Unitas ist kein physisches Zahlungsmittel, keine Reservewährung und keine Preisvorgabe. Er dient als neutraler Umrechnungsmaßstab (ein „Urmeter“ für Kaufkraft), vergleichbar mit dem bewährten Prinzip inflationsgeschützter Vertrags-Recheneinheiten (wie der chilenischen *Unidad de Fomento*), skaliert auf den globalen Handel.
-* **Freie Preisbildung:** Jeder Marktteilnehmer setzt seine Preise völlig frei nach Angebot und Nachfrage.
-* **Bilanzloser Zahlungsverkehr (Layer 1):** Die Kernplattform führt selbst **keinen Devisentausch** durch, hält keine eigenen Währungsreserven und erzeugt keine Arbitrage-Anreize. Der Käufer zahlt in seiner eigenen Währung, das System errechnet über das Unitas-Referenzmaß den exakten Kaufkraft-Gegenwert und routet genau diese Zahlungswährung direkt an den Verkäufer weiter.
-* **Nahtloser Komfort durch Banken-Schnittstellen (Layer 2 – Auto-FX-API):** Geschäftsbanken und Zahlungsdienstleister können über eine offene Programmierschnittstelle (*Auto-FX-Plugin*) eingehende Fremdwährungen auf Wunsch des Empfängers automatisch und wettbewerbsintensiv zum fairen Marktpreis in dessen Heimatwährung wandeln.
-
----
-
-## 3. Der Wertmaßstab: Produktionsgüter, Energie & Infrastruktur-Dienstleistungen
-Um Manipulationen, Zirkelschlüsse über Wechselkurse und statistische Verzögerungen auszuschließen, ist **1 Unitas (1 XUT)** ausschließlich an **physisch und technisch genormte, weltweit gehandelte Vorleistungen, Energie und Infrastruktur-Kapazitäten** gekoppelt *(im Live-Prototyp durch 5 Leit-Indikatoren abgebildet; in der produktiven Index-Engine auf 30–50 standardisierte Güter skaliert)*:
-
-* **Energie:** Die physikalische Kilowattstunde (**kWh**) Strom (volumengewichteter Durchschnitt freier Stromgroßhandelsbörsen) sowie veredelte Energieträger.
-* **Industrie-, Bau- & Basismaterialien:** Warmgewalzter Stahl, Betonstahl, Zementklinker, Flachglas, raffiniertes Kupfer, Aluminium, Basis-Chemikalien (Ammoniak, Polyethylen) sowie standardisierte Halbleiter.
-* **Agrar- & Grundnahrungsmittel:** Standardisierter Mahlweizen, Mais, Sojabohnen und Speiseöl.
-* **Physische & Digitale Infrastruktur-Dienstleistungen:** Standardisierte Container-Seefrachtraten (TEU), Luftfracht-Kapazitäten (Tonnenkilometer), standardisierte Cloud-Rechenleistung (vCPU-Stunden) sowie Cloud-Datenspeicher (Terabyte-Monat).
-
-### Dynamische Mechanik & Echtzeit-Berechnung
-1. **Dynamische Produktivitätsanpassung:** Der Warenkorb entspricht immer exakt **1 Unitas**. Steigt durch technologischen Fortschritt das Angebot eines Gutes, passen entsprechend mehr Einheiten in den 1-Unitas-Korb – Produktivitätsgewinne werden sofort als steigende reale Kaufkraft sichtbar.
-2. **Sekundengenaue Preisberechnung & Gleitende 365-Tage-Gewichtung:** Der Referenzkurs wird sekundengenau aus laufenden Börsen- und Marktpreisen über ein unabhängiges Daten-Konsortium berechnet. Die prozentuale Gewichtung im Korb passt sich täglich sanft auf Basis eines **gleitenden 365-Tage-Durchschnitts** der realen Welthandelsvolumina an.
-
----
-
-## 4. Stabilitäts-, Finanzierungs- und Governance-Architektur
-* **Systemische „Brandmauer“:** Da UNITAS bilanzlos arbeitet, bleiben regionale Banken- oder Immobilienkrisen auf das jeweilige Land begrenzt und lösen keine globale Kettenreaktion aus.
-* **Kostendeckende Gebührenstaffel:** Eine degressive Protokollgebühr (von **0,05 %** in der Startphase bis **0,001 %** im skalierten Dauerbetrieb) finanziert autark den technischen Betrieb, Marktdatenlizenzen und unabhängige Sicherheitsaudits – ohne politische Subventionstöpfe.
-* **Zweigleisige, neutrale Rechtsstruktur:** Hüterin des Open-Source-Protokolls und des XUT-Referenz-Index ist eine eigentümerlose, gemeinnützige Struktur (Start als e. V. / gUG, internationale Skalierung als **Schweizer Stiftung** mit Spiegelzentrum in **Singapur**).
-* **Drei-Stufen-Einführung:** (1) Offenes B2B-Vertragswerkzeug (*Dual-Pricing*) → (2) Integration über Geschäftsbanken (*Auto-FX-Plugin*) & regionale Foren (**AU, ASEAN, BRICS, OPEC**) → (3) Direkte **ISO-20022-Kopplung** an Zentralbanken.
-
----
----
-
 # 🇬🇧 Whitepaper: The UNITAS System (XUT)
 
 ## 1. Executive Summary
@@ -74,13 +33,15 @@ The **UNITAS System** (**U**niversal **T**rade & **A**sset **S**tandard, ISO-com
 
 ---
 
-## 3. The Value Benchmark: Production Goods, Energy & Infrastructure Services
+## 3. The Value Benchmark: 6 Real-Economy Pillars
 To eliminate manipulation and statistical delays, **1 Unitas (1 XUT)** is anchored exclusively to **physically and technically standardized, globally traded inputs, energy, and infrastructure capacities** *(represented by 5 lead indicators in the live prototype; scaled to 30–50 standardized goods in the production Index Engine)*:
 
 * **Energy:** The physical kilowatt-hour (**kWh**) of electricity (volume-weighted average across open wholesale power exchanges) and refined energy carriers.
-* **Industrial, Construction & Base Materials:** Hot-rolled steel, rebar, cement clinker, flat glass, refined copper, aluminum, base chemicals (ammonia, polyethylene), and standardized semiconductors.
+* **Industrial & Base Materials:** Hot-rolled steel, refined copper, aluminum, base chemicals (ammonia, polyethylene), and standardized semiconductors.
+* **Construction & Infrastructure Materials:** Standardized rebar, cement clinker, flat glass, and graded softwood lumber.
 * **Agricultural & Staple Goods:** Standardized milling wheat, corn, soybeans, and edible oils.
-* **Physical & Digital Infrastructure Services:** Standardized container sea-freight rates (TEU), air-freight capacities (ton-kilometers), standardized cloud computing power (vCPU-hours), and cloud data storage (terabyte-month).
+* **Transport & Logistics:** Standardized container sea-freight rates (TEU), international air-freight capacities (ton-kilometers), and benchmark rail and road freight indices.
+* **Digital Infrastructure Services:** Standardized cloud computing power (vCPU-hours), cloud data storage (terabyte-month), and international data transmission capacities.
 
 ### Dynamic Mechanics & Real-Time Pricing
 1. **Dynamic Productivity Adjustment:** One basket always equals **1 Unitas**. As technological progress expands supply, more units fit into the 1 Unitas basket—translating global productivity gains directly into rising real purchasing power.
@@ -89,6 +50,47 @@ To eliminate manipulation and statistical delays, **1 Unitas (1 XUT)** is anchor
 ---
 
 ## 4. Stability, Funding, and Governance Architecture
-• **Systemic "Firewall":** Balance-sheet-free settlement isolates domestic banking or real estate crises within their country of origin, preventing global contagion.
-• **Self-Sustaining Degressive Fee Tier:** A protocol fee scaling down from 0.05% at launch to 0.001% at global scale covers infrastructure, market data feeds, and security audits without creating politically contested capital pools.
-• **Neutral Dual Legal Structure:** Stewardship rests with an ownerless non-profit entity (scaling into a Swiss Foundation with a mirror hub in Singapore), supporting organic three-stage adoption from private B2B dual pricing and commercial bank Auto-FX APIs up to ISO 20022 central bank connectivity.
+* **Systemic "Firewall":** Balance-sheet-free settlement isolates domestic banking or real estate crises within their country of origin, preventing global contagion.
+* **Self-Sustaining Degressive Fee Tier:** A protocol fee scaling down from **0.05%** at launch to **0.001%** at global scale covers infrastructure, market data feeds, and security audits without creating politically contested capital pools.
+* **Neutral Dual Legal Structure:** Stewardship rests with an ownerless non-profit entity (scaling into a **Swiss Foundation** with a mirror hub in **Singapore**), supporting organic three-stage adoption from private B2B *dual pricing* and commercial bank *Auto-FX APIs* up to **ISO 20022** central bank connectivity.
+
+---
+---
+
+# 🇩🇪 Whitepaper: Das UNITAS-System (XUT)
+
+## 1. Executive Summary
+Die zunehmende Vernetzung der Weltwirtschaft und der rasante Anstieg grenzüberschreitender Lieferketten erfordern moderne, kosteneffiziente und widerstandsfähige Abwicklungsmechanismen. Bestehende internationale Zahlungsstrukturen führen insbesondere im Handel mit aufstrebenden Schwellen- und Wachstumsmärkten häufig zu hohen Transaktionskosten, doppelten Währungsumrechnungen, Wechselkursrisiken sowie zur Bindung erheblicher Kapitalmittel in Fremdwährungsreserven.
+
+Das **UNITAS-System** (**U**niversal **T**rade & **A**sset **S**tandard, ISO-konformes Kürzel: **XUT**) bietet hierfür eine **ergänzende, rein marktwirtschaftliche Infrastruktur**, ohne bestehende nationale Währungen zu ersetzen oder in die freie Preisbildung einzugreifen. Es kombiniert **ein transparentes, realwirtschaftliches Kaufkraft-Referenzmaß (1 Unitas / 1 XUT)** mit **einer dezentralen, bilanzlosen Verrechnungsplattform**.
+
+---
+
+## 2. Das Kernprinzip: Strikte Trennung von Maßstab, Zahlung und Markt
+* **Der Unitas (XUT) als objektives Referenzmaß:** Der Unitas ist kein physisches Zahlungsmittel, keine Reservewährung und keine Preisvorgabe. Er dient als neutraler Umrechnungsmaßstab (ein „Urmeter“ für Kaufkraft), vergleichbar mit dem bewährten Prinzip inflationsgeschützter Vertrags-Recheneinheiten (wie der chilenischen *Unidad de Fomento*), skaliert auf den globalen Handel.
+* **Bilanzloser Zahlungsverkehr (Layer 1):** Die Kernplattform führt selbst **keinen Devisentausch** durch, hält keine eigenen Währungsreserven und erzeugt keine Arbitrage-Anreize. Der Käufer zahlt in seiner eigenen Währung, das System errechnet über das Unitas-Referenzmaß den exakten Kaufkraft-Gegenwert und routet genau diese Zahlungswährung direkt an den Verkäufer weiter.
+* **Nahtloser Komfort durch Banken-Schnittstellen (Layer 2 – Auto-FX-API):** Geschäftsbanken und Zahlungsdienstleister können über eine offene Programmierschnittstelle (*Auto-FX-Plugin*) eingehende Fremdwährungen auf Wunsch des Empfängers automatisch und wettbewerbsintensiv zum fairen Marktpreis in dessen Heimatwährung wandeln.
+
+---
+
+## 3. Der Wertmaßstab: 6 realwirtschaftliche Säulen
+Um Manipulationen, Zirkelschlüsse über Wechselkurse und statistische Verzögerungen auszuschließen, ist **1 Unitas (1 XUT)** ausschließlich an **physisch und technisch genormte, weltweit gehandelte Vorleistungen, Energie und Infrastruktur-Kapazitäten** gekoppelt *(im Live-Prototyp durch 5 Leit-Indikatoren abgebildet; in der produktiven Index-Engine auf 30–50 standardisierte Güter skaliert)*:
+
+* **Energie:** Die physikalische Kilowattstunde (**kWh**) Strom (volumengewichteter Durchschnitt freier Stromgroßhandelsbörsen) sowie veredelte Energieträger.
+* **Industrie- & Basismaterialien:** Warmgewalzter Stahl, raffiniertes Kupfer, Aluminium, Basis-Chemikalien (Ammoniak, Polyethylen) sowie standardisierte Halbleiter.
+* **Bau- & Infrastrukturstoffe:** Standardisierter Betonstahl, Zementklinker, Flachglas sowie genormtes Nadelschnittholz (Bauholz).
+* **Agrar- & Grundnahrungsmittel:** Standardisierter Mahlweizen, Mais, Sojabohnen und Speiseöl.
+* **Transport & Logistik:** Standardisierte Container-Seefrachtraten (TEU), internationale Luftfracht-Kapazitäten (Tonnenkilometer) sowie genormte Schienen- und Straßengüterfracht-Indizes.
+* **Digitale Infrastruktur-Dienstleistungen:** Standardisierte Cloud-Rechenleistung (vCPU-Stunden), Cloud-Datenspeicher (Terabyte-Monat) sowie internationale Datenübertragungskapazitäten.
+
+### Dynamische Mechanik & Echtzeit-Berechnung
+1. **Dynamische Produktivitätsanpassung:** Der Warenkorb entspricht immer exakt **1 Unitas**. Steigt durch technologischen Fortschritt das Angebot eines Gutes, passen entsprechend mehr Einheiten in den 1-Unitas-Korb – Produktivitätsgewinne werden sofort als steigende reale Kaufkraft sichtbar.
+2. **Sekundengenaue Preisberechnung & Gleitende 365-Tage-Gewichtung:** Der Referenzkurs wird sekundengenau aus laufenden Börsen- und Marktpreisen über ein unabhängiges Daten-Konsortium berechnet. Die prozentuale Gewichtung im Korb passt sich täglich sanft auf Basis eines **gleitenden 365-Tage-Durchschnitts** der realen Welthandelsvolumina an.
+
+---
+
+## 4. Stabilitäts-, Finanzierungs- und Governance-Architektur
+* **Systemische „Brandmauer“:** Da UNITAS bilanzlos arbeitet, bleiben regionale Banken- oder Immobilienkrisen auf das jeweilige Land begrenzt und lösen keine globale Kettenreaktion aus.
+* **Kostendeckende Gebührenstaffel:** Eine degressive Protokollgebühr (von **0,05 %** in der Startphase bis **0,001 %** im skalierten Dauerbetrieb) finanziert autark den technischen Betrieb, Marktdatenlizenzen und unabhängige Sicherheitsaudits – ohne politische Subventionstöpfe.
+* **Zweigleisige, neutrale Rechtsstruktur:** Hüterin des Open-Source-Protokolls und des XUT-Referenz-Index ist eine eigentümerlose, gemeinnützige Struktur (Start als e. V. / gUG, internationale Skalierung als **Schweizer Stiftung** mit Spiegelzentrum in **Singapur**).
+* **Drei-Stufen-Einführung:** (1) Offenes B2B-Vertragswerkzeug (*Dual-Pricing*) → (2) Integration über Geschäftsbanken (*Auto-FX-Plugin*) & regionale Foren (**AU, ASEAN, BRICS, OPEC**) → (3) Direkte **ISO-20022-Kopplung** an Zentralbanken.

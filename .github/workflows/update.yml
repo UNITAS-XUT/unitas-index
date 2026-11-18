@@ -15,13 +15,49 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Fetch live market feeds via curl
+        run: |
+          curl -sSL --max-time 20 "https://er-api.com" -o fx_raw.json || echo "{}" > fx_raw.json
+          curl -sSL --max-time 20 "https://awattar.de" -o pw_raw.json || echo "{}" > pw_raw.json
+          python3 - << 'EOF'
+          import json
+          from datetime import datetime, timezone
 
-      - name: Run data aggregator
-        run: python update_rates.py
+          out = {
+              "updated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+              "fx_live": False,
+              "power_live": False,
+              "rates": {},
+              "power_eur_mwh": None
+          }
+          excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
+
+          try:
+              with open("fx_raw.json", "r", encoding="utf-8") as f:
+                  fx = json.load(f)
+              if isinstance(fx, dict) and "rates" in fx:
+                  out["rates"] = {k: v for k, v in fx["rates"].items() if k not in excluded}
+                  out["fx_live"] = len(out["rates"]) > 20
+          except Exception as e:
+              print("FX parse info:", e)
+
+          try:
+              with open("pw_raw.json", "r", encoding="utf-8") as f:
+                  pw = json.load(f)
+              if isinstance(pw, dict) and isinstance(pw.get("data"), list) and pw["data"]:
+                  prices = [x["marketprice"] for x in pw["data"] if isinstance(x.get("marketprice"), (int, float))]
+                  if prices:
+                      out["power_eur_mwh"] = round(sum(prices) / len(prices), 2)
+                      out["power_live"] = True
+          except Exception as e:
+              print("Power parse info:", e)
+
+          with open("rates.json", "w", encoding="utf-8") as f:
+              json.dump(out, f, indent=2)
+
+          print("Saved rates.json -> fx_live:", out["fx_live"], "power_live:", out["power_live"])
+          EOF
+          rm -f fx_raw.json pw_raw.json
 
       - name: Commit and push updated rates.json
         run: |

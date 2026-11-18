@@ -23,16 +23,17 @@ excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
 def get_latest_fred_kg(url):
     req = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(req, timeout=20) as r:
+    with urllib.request.urlopen(req, timeout=45) as r:
         lines = r.read().decode("utf-8").strip().splitlines()
     for line in reversed(lines):
         parts = line.split(",")
-        if len(parts) == 2 and parts[1] not in (".", "", "VALUE"):
-            try:
-                usd_per_ton = float(parts[1])
-                return round(usd_per_ton / 1000.0, 4)
-            except ValueError:
-                continue
+        if len(parts) == 2:
+            val_str = parts.pop().strip()
+            if val_str not in (".", "", "VALUE"):
+                try:
+                    return round(float(val_str) / 1000.0, 4)
+                except ValueError:
+                    continue
     return None
 
 try:

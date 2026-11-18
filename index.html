@@ -405,21 +405,40 @@ function fetchLiveFeeds() {
                 fxSt.textContent = i18n[currentLang].fxOffline;
                 fxSt.style.background = "#d97706";
             }
-            
             if (d && d.power_live && d.power_eur_mwh !== null) {
                 powerLiveAvg = d.power_eur_mwh;
-               var powerItem = basket[0];
-                powerItem.priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
-                powerItem.isLive = true;
-                powerItem.sourceKey = "static";
-                powerItem.customSource = "Energy-Charts Live";
+                var powerItem = basket.find(function(x) { return x.id === "power"; });
+                if (powerItem) {
+                    powerItem.priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
+                    powerItem.isLive = true;
+                    powerItem.sourceKey = "static";
+                    powerItem.customSource = "EPEX / aWATTar Live";
+                }
                 pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
                 pwSt.style.background = "#16a34a";
-                renderBasket();
             } else {
                 pwSt.textContent = i18n[currentLang].pwOffline;
                 pwSt.style.background = "#d97706";
             }
+            if (d && d.copper_live && d.copper_usd_kg !== null) {
+                var copperItem = basket.find(function(x) { return x.id === "copper"; });
+                if (copperItem) {
+                    copperItem.priceUsd = d.copper_usd_kg;
+                    copperItem.isLive = true;
+                    copperItem.sourceKey = "static";
+                    copperItem.customSource = "FRED / IMF Live";
+                }
+            }
+            if (d && d.wheat_live && d.wheat_usd_kg !== null) {
+                var wheatItem = basket.find(function(x) { return x.id === "wheat"; });
+                if (wheatItem) {
+                    wheatItem.priceUsd = d.wheat_usd_kg;
+                    wheatItem.isLive = true;
+                    wheatItem.sourceKey = "static";
+                    wheatItem.customSource = "FRED / IMF Live";
+                }
+            }
+            renderBasket();
             recalculate("xut");
         })
         .catch(function() {

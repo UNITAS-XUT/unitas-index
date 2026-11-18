@@ -4,8 +4,8 @@ from datetime import datetime, timezone
 
 fx_url = "https://" + "open." + "er-api.com" + "/v6/latest/USD"
 pw_url = "https://" + "api.awattar.de" + "/v1/marketdata"
-copper_url = "https://" + "stooq.com" + "/q/l/?s=hg.f&f=sd2t2ohlc&h&e=csv"
-wheat_url = "https://" + "stooq.com" + "/q/l/?s=zw.f&f=sd2t2ohlc&h&e=csv"
+copper_url = "https://" + "stooq.com" + "/q/l/" + "?" + "s=hg.f&f=sd2t2ohlc&h&e=csv"
+wheat_url = "https://" + "stooq.com" + "/q/l/" + "?" + "s=zw.f&f=sd2t2ohlc&h&e=csv"
 headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"}
 
 out = {

@@ -1,7 +1,9 @@
 {
-  "updated_utc": "2026-11-18 02:01 UTC",
+  "updated_utc": "2026-11-18 02:24 UTC",
   "fx_live": true,
   "power_live": true,
+  "copper_live": false,
+  "wheat_live": false,
   "rates": {
     "USD": 1,
     "AED": 3.6725,
@@ -165,5 +167,7 @@
     "ZWG": 26.6142,
     "ZWL": 26.6142
   },
-  "power_eur_mwh": 152.53
+  "power_eur_mwh": 152.53,
+  "copper_usd_kg": null,
+  "wheat_usd_kg": null
 }

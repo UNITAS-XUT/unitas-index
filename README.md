@@ -4,13 +4,12 @@
 *A Neutral, Real-Economy Reference and Settlement Standard for Global Trade*
 
 [![License: MIT](https://shields.io)](https://opensource.org)
-[![Status: Proof of Concept](https://shields.io)]()
+[![Status: Proof of Concept](https://shields.io)](https://github.io)
 
 ---
 
 ## 🌐 Live-Prototyp / Live Demo
-👉 **[Hier den interaktiven UNITAS (XUT) 3-Wege-Handelsrechner starten](https://github.io)**  
-*(Hinweis: Bitte nach Aktivierung von GitHub Pages `DEIN-GITHUB-NAME` durch deinen Benutzernamen ersetzen.)*
+👉 **[Hier den interaktiven UNITAS (XUT) 3-Wege-Handelsrechner starten / Launch Live Calculator](https://github.io)**
 
 Der zweisprachige Open-Source-Prototyp (`index.html`, umschaltbar zwischen 🇩🇪 Deutsch und 🇬🇧 Englisch) demonstriert:
 * **Bidirektionale 3-Wege-Umrechnung** zwischen über 150 Weltwährungen und dem realwirtschaftlichen Kaufkraft-Anker **UNITAS (XUT)**.

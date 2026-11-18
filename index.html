@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -116,7 +116,7 @@
     </div>
 </div>
 <script>
-var currentLang = "de";
+var currentLang = "en";
 var fxLiveCount = 0;
 var powerLiveAvg = null;
 
@@ -220,7 +220,7 @@ function populateCurrencyDropdowns(selectedFrom, selectedTo) {
     var restList = allCodes.filter(function(c) { return topList.indexOf(c) === -1; }).sort();
 
     [fromSel, toSel].forEach(function(sel, idx) {
-        var targetDefault = idx === 0 ? (selectedFrom || "EUR") : (selectedTo || "TRY");
+        var targetDefault = idx === 0 ? (selectedFrom || "EUR") : (selectedTo || "USD");
         sel.innerHTML = "";
         var grpTop = document.createElement("optgroup");
         grpTop.label = t.grpTop;
@@ -273,7 +273,7 @@ function setLanguage(lang) {
     pwSt.textContent = powerLiveAvg !== null ? t.pwLive.replace("{p}", powerLiveAvg.toFixed(1)) : t.pwOffline;
 
     var curFrom = document.getElementById("from-currency").value || "EUR";
-    var curTo = document.getElementById("to-currency").value || "TRY";
+    var curTo = document.getElementById("to-currency").value || "USD";
     populateCurrencyDropdowns(curFrom, curTo);
     renderBasket();
     recalculate("xut");
@@ -297,7 +297,7 @@ function recalculate(mode) {
     document.getElementById("basket-usd-total").textContent = t.basketTotal.replace("{usd}", xutUsd.toFixed(4)).replace("{eur}", xutEur.toFixed(4));
 
     var fromCurr = document.getElementById("from-currency").value || "EUR";
-    var toCurr = document.getElementById("to-currency").value || "TRY";
+    var toCurr = document.getElementById("to-currency").value || "USD";
     var fromInput = document.getElementById("from-amount");
     var xutInput = document.getElementById("xut-amount");
     var toInput = document.getElementById("to-amount");
@@ -366,7 +366,7 @@ function fetchLiveFeeds() {
     var fxSt = document.getElementById("fx-status");
     var pwSt = document.getElementById("power-status");
     var curFrom = document.getElementById("from-currency").value || "EUR";
-    var curTo = document.getElementById("to-currency").value || "TRY";
+    var curTo = document.getElementById("to-currency").value || "USD";
 
     fetch("./rates.json?t=" + Date.now())
         .then(function(r) { return r.json(); })
@@ -380,10 +380,11 @@ function fetchLiveFeeds() {
             }
             if (d && d.power_live && d.power_eur_mwh !== null) {
                 powerLiveAvg = d.power_eur_mwh;
-                basket[0].priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
-                basket[0].isLive = true;
-                basket[0].sourceKey = "static";
-                basket[0].customSource = "Energy-Charts Live";
+               var powerItem = basket[0];
+                powerItem.priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
+                powerItem.isLive = true;
+                powerItem.sourceKey = "static";
+                powerItem.customSource = "Energy-Charts Live";
                 pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
                 pwSt.style.background = "#16a34a";
                 renderBasket();
@@ -413,8 +414,8 @@ document.getElementById("btn-reset").addEventListener("click", function() {
     fetchLiveFeeds();
 });
 
-populateCurrencyDropdowns("EUR", "TRY");
-renderBasket();
+populateCurrencyDropdowns("EUR", "USD");
+setLanguage("en");
 recalculate("from");
 fetchLiveFeeds();
 </script>

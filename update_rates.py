@@ -2,7 +2,7 @@ import json
 import urllib.request
 from datetime import datetime, timezone
 
-fx_url = "https://" + "://er-api.com" + "/v6/latest/USD"
+fx_url = "https://" + "open." + "er-api.com" + "/v6/latest/USD"
 pw_url = "https://" + "api.awattar.de" + "/v1/marketdata"
 headers = {"User-Agent": "Mozilla/5.0"}
 

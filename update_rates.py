@@ -4,9 +4,9 @@ from datetime import datetime, timezone
 
 fx_url = "https://" + "open." + "er-api.com" + "/v6/latest/USD"
 pw_url = "https://" + "api.awattar.de" + "/v1/marketdata"
-copper_url = "https://" + "stooq.com" + "/q/d/l/" + "?" + "s=hg.f&i=d"
-wheat_url = "https://" + "stooq.com" + "/q/d/l/" + "?" + "s=zw.f&i=d"
-headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"}
+copper_url = "https://" + "://yahoo.com" + "/v8/finance/chart/HG=F" + "?" + "interval=1d&range=5d"
+wheat_url = "https://" + "://yahoo.com" + "/v8/finance/chart/ZW=F" + "?" + "interval=1d&range=5d"
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 out = {
     "updated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
@@ -21,15 +21,16 @@ out = {
 }
 excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
-def get_stooq_close(url):
+def get_yahoo_price(url):
     req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=15) as r:
-        lines = r.read().decode("utf-8").strip().splitlines()
-    if len(lines) >= 2:
-        cols = lines.pop().split(",")
-        close_str = cols.pop().strip()
-        if close_str not in ("N/D", "", "Close"):
-            return float(close_str)
+        data = json.loads(r.read().decode("utf-8"))
+    result_list = data.get("chart", {}).get("result", [])
+    if result_list:
+        meta = result_list.pop().get("meta", {})
+        price = meta.get("regularMarketPrice") or meta.get("previousClose")
+        if isinstance(price, (int, float)) and price > 0:
+            return float(price)
     return None
 
 try:
@@ -55,17 +56,17 @@ except Exception as e:
     print("Power error:", e)
 
 try:
-    # HG.F ist in US-Cent pro Pfund (1 kg = 2.20462 lbs)
-    c_cents_lb = get_stooq_close(copper_url)
-    if c_cents_lb and c_cents_lb > 0:
-        out["copper_usd_kg"] = round((c_cents_lb / 100.0) * 2.20462, 4)
+    # HG=F ist in USD pro Pfund (1 kg = 2.20462 lbs)
+    c_usd_lb = get_yahoo_price(copper_url)
+    if c_usd_lb and c_usd_lb > 0:
+        out["copper_usd_kg"] = round(c_usd_lb * 2.20462, 4)
         out["copper_live"] = True
 except Exception as e:
     print("Copper error:", e)
 
 try:
-    # ZW.F ist in US-Cent pro Bushel (1 Bushel Weizen = 27.2155 kg)
-    w_cents_bu = get_stooq_close(wheat_url)
+    # ZW=F ist in US-Cent pro Bushel (1 Bushel Weizen = 27.2155 kg)
+    w_cents_bu = get_yahoo_price(wheat_url)
     if w_cents_bu and w_cents_bu > 0:
         out["wheat_usd_kg"] = round((w_cents_bu / 100.0) / 27.2155, 4)
         out["wheat_live"] = True

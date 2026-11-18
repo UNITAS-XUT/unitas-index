@@ -363,47 +363,39 @@ function renderBasket() {
 }
 
 function fetchLiveFeeds() {
-    var t = i18n[currentLang];
     var fxSt = document.getElementById("fx-status");
     var pwSt = document.getElementById("power-status");
     var curFrom = document.getElementById("from-currency").value || "EUR";
     var curTo = document.getElementById("to-currency").value || "TRY";
 
-    fetch("https://er-api.com").then(function(r) { return r.json(); }).then(function(d) {
-        if (d && d.rates) {
-            ["RUB", "BYN", "IRR", "KPW", "SYP", "VES"].forEach(function(c) { delete d.rates[c]; });
-            fxRatesPerUsd = d.rates;
-            fxLiveCount = Object.keys(d.rates).length;
-            populateCurrencyDropdowns(curFrom, curTo);
-            fxSt.textContent = i18n[currentLang].fxLive.replace("{n}", fxLiveCount);
-            fxSt.style.background = "#16a34a";
-            recalculate("xut");
-        }
-    }).catch(function() {
-        fxSt.textContent = i18n[currentLang].fxOffline;
-        fxSt.style.background = "#d97706";
-    });
-
-    fetch("https://energy-charts.info").then(function(r) { return r.json(); }).then(function(d) {
-        if (d && Array.isArray(d.price)) {
-            var valid = d.price.filter(function(p) { return typeof p === "number" && !isNaN(p); });
-            if (valid.length > 0) {
-                powerLiveAvg = valid.reduce(function(a, b) { return a + b; }, 0) / valid.length;
-                var firstIdx = 0;
-                basket[firstIdx].priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
-                basket[firstIdx].isLive = true;
-                basket[firstIdx].sourceKey = "static";
-                basket[firstIdx].customSource = "Energy-Charts Live";
+    fetch("./rates.json?t=" + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+            if (d && d.fx_live && d.rates) {
+                fxRatesPerUsd = d.rates;
+                fxLiveCount = Object.keys(d.rates).length;
+                populateCurrencyDropdowns(curFrom, curTo);
+                fxSt.textContent = i18n[currentLang].fxLive.replace("{n}", fxLiveCount);
+                fxSt.style.background = "#16a34a";
+            }
+            if (d && d.power_live && d.power_eur_mwh !== null) {
+                powerLiveAvg = d.power_eur_mwh;
+                basket[0].priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
+                basket[0].isLive = true;
+                basket[0].sourceKey = "static";
+                basket[0].customSource = "Energy-Charts Live";
                 pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
                 pwSt.style.background = "#16a34a";
                 renderBasket();
-                recalculate("xut");
             }
-        }
-    }).catch(function() {
-        pwSt.textContent = i18n[currentLang].pwOffline;
-        pwSt.style.background = "#d97706";
-    });
+            recalculate("xut");
+        })
+        .catch(function() {
+            fxSt.textContent = i18n[currentLang].fxOffline;
+            fxSt.style.background = "#d97706";
+            pwSt.textContent = i18n[currentLang].pwOffline;
+            pwSt.style.background = "#d97706";
+        });
 }
 
 document.getElementById("btn-lang-de").addEventListener("click", function() { setLanguage("de"); });

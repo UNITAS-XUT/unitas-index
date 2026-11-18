@@ -48,10 +48,20 @@ To eliminate manipulation and statistical delays, **1 Unitas (1 XUT)** is anchor
 
 ---
 
-## 4. Stability, Funding, and Governance Architecture
-* **Systemic "Firewall":** Balance-sheet-free settlement isolates domestic banking or real estate crises within their country of origin, preventing global contagion.
-* **Self-Sustaining Degressive Fee Tier:** A protocol fee scaling down from **0.05%** at launch to **0.001%** at global scale covers infrastructure, market data feeds, and security audits without creating politically contested capital pools.
-* **Neutral Dual Legal Structure:** Stewardship rests with an ownerless non-profit entity (scaling into a **Swiss Foundation** with a mirror hub in **Singapore**), supporting organic three-stage adoption from private B2B *dual pricing* and commercial bank *Auto-FX APIs* up to **ISO 20022** central bank connectivity.
+## 4. Stability, Non-Profit Funding, and Layer-3 Commons Architecture
+* **Systemic "Firewall" (Layer 1):** Isolates domestic banking or real estate crises to prevent global contagion.
+* **Non-Profit Fee Model (0.05% Launch → 0.01% Target Tier):** A degressive protocol fee scaling down to a target of 0.01%, remaining over 99% cheaper than legacy banking.
+* **3-Pillar Global Commons Fund (Layer 3):** Surpluses above operating costs are routed to the UNITAS Global Commons Foundation for humanitarian disaster relief, self-help infrastructure development, and open science research.
+* **Neutral Dual Legal Structure:** Managed by an ownerless non-profit entity (Swiss Foundation with a mirror hub in Singapore) supporting adoption across B2B and central bank connectivity.
+
+---
+
+## 5. Institutional Adoption Roadmap: Bottom-Up Market Pull
+UNITAS (XUT) does not rely on political treaties or top-down mandates. Instead, it scales organically through open technical standardization and real-economy cost savings:
+
+1. **Stage 1 – B2B Contractual Standard (Dual Pricing):** Exporting and importing enterprises adopt XUT as a neutral unit of account in cross-border supply contracts and ERP systems to eliminate FX volatility.
+2. **Stage 2 – Commercial Banking & Fintech Integration (Auto-FX API):** Payment service providers and commercial banks integrate the open *Auto-FX Plugin*, enabling automated, low-cost domestic currency settlement across emerging and industrial corridors.
+3. **Stage 3 – Multilateral Central Bank Interoperability (ISO 20022 & BIS):** Once critical B2B transaction volume is reached, central banks can connect domestic instant payment systems (such as TARGET, PIX, UPI, or CIPS) via standardized **ISO 20022** messaging and neutral technical forums like the **Bank for International Settlements (BIS) Innovation Hub**.
 
 ---
 ---
@@ -88,8 +98,18 @@ Um Manipulationen, Zirkelschlüsse über Wechselkurse und statistische Verzöger
 
 ---
 
-## 4. Stabilitäts-, Finanzierungs- und Governance-Architektur
-* **Systemische „Brandmauer“:** Da UNITAS bilanzlos arbeitet, bleiben regionale Banken- oder Immobilienkrisen auf das jeweilige Land begrenzt und lösen keine globale Kettenreaktion aus.
-* **Kostendeckende Gebührenstaffel:** Eine degressive Protokollgebühr (von **0,05 %** in der Startphase bis **0,001 %** im skalierten Dauerbetrieb) finanziert autark den technischen Betrieb, Marktdatenlizenzen und unabhängige Sicherheitsaudits – ohne politische Subventionstöpfe.
-* **Zweigleisige, neutrale Rechtsstruktur:** Hüterin des Open-Source-Protokolls und des XUT-Referenz-Index ist eine eigentümerlose, gemeinnützige Struktur (Start als e. V. / gUG, internationale Skalierung als **Schweizer Stiftung** mit Spiegelzentrum in **Singapur**).
-* **Drei-Stufen-Einführung:** (1) Offenes B2B-Vertragswerkzeug (*Dual-Pricing*) → (2) Integration über Geschäftsbanken (*Auto-FX-Plugin*) & regionale Foren (**AU, ASEAN, BRICS, OPEC**) → (3) Direkte **ISO-20022-Kopplung** an Zentralbanken.
+## 4. Stabilitäts-, Non-Profit-Finanzierungs- und Gemeinwohl-Architektur (Layer 3)
+* **Systemische „Brandmauer“ (Layer 1):** Bilanzlose Arbeitsweise begrenzt regionale Banken- oder Immobilienkrisen auf das Ursprungsland.
+* **Gemeinnütziges Gebührenmodell (0,05 % Start → 0,01 % Zielgebühr):** Eine degressive Protokollgebühr sinkt auf eine Zielgebühr von 0,01 % und bleibt über 99 % günstiger als klassische Bank-Spreads.
+* **3-Säulen-Gemeinwohlfonds (Layer 3):** Überschüsse oberhalb der Betriebskosten fließen an die UNITAS Global Commons Foundation für humanitäre Katastrophenhilfe, Infrastruktur-Entwicklung und offene Grundlagenforschung.
+* **Zweigleisige, neutrale Rechtsstruktur:** Getragen von einer gemeinnützigen Struktur (Schweizer Stiftung mit Spiegelzentrum in Singapur) für Skalierung und Anbindung.
+
+---
+
+## 5. Einführungs-Roadmap: Organisches Wachstum durch Marktdruck (Bottom-Up)
+UNITAS (XUT) setzt nicht auf politische Staatsverträge oder Verordnungen von oben, sondern wächst organisch durch offene technische Standards und messbare Kostenvorteile in der Realwirtschaft:
+
+1. **Stufe 1 – B2B-Vertragsstandard (Dual Pricing):** Export- und Importunternehmen nutzen XUT als neutrale Recheneinheit in Lieferverträgen und ERP-Systemen, um Wechselkursrisiken auszuschalten.
+2. **Stufe 2 – Integration über Geschäftsbanken & Fintechs (Auto-FX-API):** Zahlungsdienstleister und Banken binden das offene *Auto-FX-Plugin* ein und ermöglichen so günstige, automatisierte Auszahlungen in der jeweiligen Landeswährung.
+3. **Stufe 3 – Multilaterale Zentralbank-Kopplung (ISO 20022 & BIZ):** Sobald ein kritisches B2B-Handelsvolumen erreicht ist, können Notenbanken ihre nationalen Echtzeit-Zahlungssysteme (wie TARGET, PIX, UPI oder CIPS) über standardisierte **ISO-20022**-Nachrichten und neutrale Fachforen wie den **Innovationshub der Bank für Internationalen Zahlungsausgleich (BIZ)** technisch andocken.
+

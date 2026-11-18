@@ -1,9 +1,8 @@
 {
-  "updated_utc": "2026-11-18 10:48 UTC",
+  "updated_utc": "2026-11-18 11:05 UTC",
   "fx_live": true,
   "power_live": true,
-  "copper_live": true,
-  "wheat_live": true,
+  "live_commodities_count": 21,
   "rates": {
     "USD": 1,
     "AED": 3.6725,
@@ -172,7 +171,28 @@
     "ZWG": 26.6142,
     "ZWL": 26.6142
   },
-  "power_eur_mwh": 173.45,
-  "copper_usd_kg": 12.6876,
-  "wheat_usd_kg": 0.2206
+  "power_eur_mwh": 178.13,
+  "commodities": {
+    "gas": 3.194,
+    "oil": 0.5627,
+    "diesel": 1.0347,
+    "steel": 1.5807,
+    "copper": 12.6854,
+    "aluminum": 2.9275,
+    "iron": 0.1619,
+    "gold": 121.2821,
+    "silver": 1.4704,
+    "platinum": 44.2297,
+    "palladium": 30.4306,
+    "lumber": 223.7537,
+    "wheat": 0.2207,
+    "corn": 0.1747,
+    "soybeans": 0.4482,
+    "soyoil": 1.3587,
+    "sugar": 0.3948,
+    "coffee": 6.1421,
+    "cocoa": 5.153,
+    "cotton": 1.7866,
+    "rice": 0.0041
+  }
 }

@@ -1,11 +1,10 @@
 import json
 import urllib.request
-import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/xml, */*"
+    "User-Agent": "UNITAS-Index-Aggregator/1.0 (+https://github.com)",
+    "Accept": "application/json"
 }
 
 output = {
@@ -18,55 +17,38 @@ output = {
 
 excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
-# 1. Versuch: Frankfurter API (Offizielle EZB-Kurse)
+# 1. Weltwährungen über jsDelivr Open-Currency-CDN (GitHub-freundlich, 160+ Währungen)
 try:
-    req = urllib.request.Request("https://frankfurter.app", headers=HEADERS)
+    url = "https://jsdelivr.net"
+    req = urllib.request.Request(url, headers=HEADERS)
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read().decode("utf-8"))
-        if data and "rates" in data:
-            rates = {"USD": 1.0}
-            for k, v in data["rates"].items():
-                if k not in excluded:
-                    rates[k] = v
-            output["rates"] = rates
-            output["fx_live"] = True
-except Exception as e:
-    print("Frankfurter API warning:", e)
-
-# 1b. Backup-Versuch: Direkter XML-Feed der Europäischen Zentralbank (EZB)
-if not output["fx_live"]:
-    try:
-        req = urllib.request.Request("https://europa.eu", headers=HEADERS)
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            xml_data = resp.read()
-            root = ET.fromstring(xml_data)
-            eur_rates = {"EUR": 1.0}
-            for cube in root.findall(".//{http://ecb.int}Cube[@currency]"):
-                curr = cube.attrib["currency"]
-                rate = float(cube.attrib["rate"])
-                if curr not in excluded:
-                    eur_rates[curr] = rate
-            if "USD" in eur_rates:
-                usd_per_eur = eur_rates["USD"]
-                output["rates"] = {k: round(v / usd_per_eur, 6) for k, v in eur_rates.items()}
+        if data and "usd" in data:
+            rates = {}
+            for k, v in data["usd"].items():
+                code = k.upper()
+                if len(code) == 3 and code.isalpha() and code not in excluded and isinstance(v, (int, float)) and v > 0:
+                    rates[code] = round(float(v), 6)
+            if len(rates) > 50:
+                output["rates"] = rates
                 output["fx_live"] = True
-    except Exception as e:
-        print("ECB XML fallback warning:", e)
+except Exception as e:
+    print("FX CDN warning:", e)
 
-# 2. Stromgroßhandelspreis (Fraunhofer Energy-Charts API)
+# 2. Stromgroßhandelspreis über offene EPEX-SPOT / aWATTar API (DE/AT)
 try:
-    req = urllib.request.Request("https://energy-charts.info", headers=HEADERS)
+    req = urllib.request.Request("https://awattar.de", headers=HEADERS)
     with urllib.request.urlopen(req, timeout=15) as resp:
         data = json.loads(resp.read().decode("utf-8"))
-        if data and isinstance(data.get("price"), list):
-            valid = [p for p in data["price"] if isinstance(p, (int, float))]
-            if valid:
-                output["power_eur_mwh"] = round(sum(valid) / len(valid), 2)
+        if data and isinstance(data.get("data"), list) and len(data["data"]) > 0:
+            prices = [item["marketprice"] for item in data["data"] if isinstance(item.get("marketprice"), (int, float))]
+            if prices:
+                output["power_eur_mwh"] = round(sum(prices) / len(prices), 2)
                 output["power_live"] = True
 except Exception as e:
-    print("Energy-Charts warning:", e)
+    print("Power API warning:", e)
 
 with open("rates.json", "w", encoding="utf-8") as f:
     json.dump(output, f, indent=2)
 
-print("Done:", output["fx_live"], output["power_live"])
+print(f"Done: fx_live={output['fx_live']} ({len(output['rates'])} currencies), power_live={output['power_live']} ({output['power_eur_mwh']} EUR/MWh)")

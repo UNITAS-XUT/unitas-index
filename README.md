@@ -9,7 +9,7 @@
 ---
 
 ## 🌐 Live-Prototyp / Live Demo
-👉 **[Hier den interaktiven UNITAS (XUT) 3-Wege-Handelsrechner starten / Launch Live Calculator](https://github.io)**
+👉 **[Hier den interaktiven UNITAS (XUT) 3-Wege-Handelsrechner starten / Launch Live Calculator]([https://github.io](https://unitas-xut.github.io/unitas-index/)**
 
 Der zweisprachige Open-Source-Prototyp (`index.html`, umschaltbar zwischen 🇩🇪 Deutsch und 🇬🇧 Englisch) demonstriert:
 * **Bidirektionale 3-Wege-Umrechnung** zwischen über 150 Weltwährungen und dem realwirtschaftlichen Kaufkraft-Anker **UNITAS (XUT)**.

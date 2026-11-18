@@ -19,7 +19,6 @@ out = {
     "copper_usd_kg": None,
     "wheat_usd_kg": None
 }
-excluded = {"RUB", "BYN", "IRR", "KPW", "SYP", "VES"}
 
 def get_yahoo_price(url):
     req = urllib.request.Request(url, headers=headers)
@@ -38,7 +37,7 @@ try:
     with urllib.request.urlopen(req, timeout=15) as r:
         fx = json.loads(r.read().decode("utf-8"))
     if isinstance(fx, dict) and "rates" in fx:
-        out["rates"] = {k: v for k, v in fx["rates"].items() if k not in excluded}
+        out["rates"] = fx["rates"]
         out["fx_live"] = len(out["rates"]) > 20
 except Exception as e:
     print("FX error:", e)
@@ -56,7 +55,6 @@ except Exception as e:
     print("Power error:", e)
 
 try:
-    # HG=F ist in USD pro Pfund (1 kg = 2.20462 lbs)
     c_usd_lb = get_yahoo_price(copper_url)
     if c_usd_lb and c_usd_lb > 0:
         out["copper_usd_kg"] = round(c_usd_lb * 2.20462, 4)
@@ -65,7 +63,6 @@ except Exception as e:
     print("Copper error:", e)
 
 try:
-    # ZW=F ist in US-Cent pro Bushel (1 Bushel Weizen = 27.2155 kg)
     w_cents_bu = get_yahoo_price(wheat_url)
     if w_cents_bu and w_cents_bu > 0:
         out["wheat_usd_kg"] = round((w_cents_bu / 100.0) / 27.2155, 4)

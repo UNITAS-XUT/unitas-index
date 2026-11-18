@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNITAS (XUT) – Benchmark Index &amp; Trade Calculator</title>
+    <style>
+        :root { --primary: #0f172a; --accent: #0284c7; --accent-light: #e0f2fe; --success: #16a34a; --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0; --text: #1e293b; --muted: #64748b; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.5; }
+        .container { max-width: 1180px; margin: 0 auto; }
+        header { background: var(--primary); color: white; padding: 24px 30px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        header h1 { margin: 0; font-size: 1.45rem; }
+        header p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9rem; }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .lang-switch { display: flex; gap: 6px; }
+        .lang-btn { background: rgba(255,255,255,0.12); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); padding: 5px 11px; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600; transition: all 0.15s; }
+        .lang-btn:hover { background: rgba(255,255,255,0.22); color: white; }
+        .lang-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .badge-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .badge { background: var(--accent); color: white; padding: 5px 11px; border-radius: 20px; font-size: 0.76rem; font-weight: 600; }
+        .main-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
+        @media (max-width: 960px) { .main-grid { grid-template-columns: 1fr; } .header-right { align-items: flex-start; } }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03); }
+        h2 { margin-top: 0; font-size: 1.15rem; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .three-way-grid { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 10px; align-items: end; margin-top: 16px; }
+        @media (max-width: 680px) { .three-way-grid { grid-template-columns: 1fr; } .arrow-sep { text-align: center; transform: rotate(90deg); } }
+        .arrow-sep { font-size: 1.2rem; font-weight: 700; color: var(--accent); padding-bottom: 10px; }
+        .box-panel { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px; min-width: 0; }
+        .box-panel.unitas-center { background: var(--accent-light); border: 2px solid var(--accent); }
+        .box-panel label { display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+        .box-panel.unitas-center label { color: var(--primary); }
+        select, input[type="number"] { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 0.95rem; color: var(--text); background: white; }
+        select { margin-bottom: 8px; font-weight: 600; }
+        .unitas-label-box { padding: 9px 10px; background: white; border: 1px solid #bae6fd; border-radius: 7px; font-weight: 700; font-size: 0.95rem; color: var(--accent); margin-bottom: 8px; text-align: center; }
+        input[type="number"] { font-weight: 700; font-size: 1.05rem; }
+        .rate-summary { background: #f1f5f9; padding: 12px 14px; border-radius: 8px; margin-top: 16px; font-size: 0.86rem; color: var(--text); }
+        .savings-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 14px; border-radius: 8px; margin-top: 14px; font-size: 0.9rem; }
+        .savings-highlight { color: var(--success); font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { text-align: left; padding: 10px 6px; border-bottom: 1px solid var(--border); }
+        th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
+        .source-tag { display: inline-block; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; background: #f1f5f9; color: #475569; }
+        .source-live { background: #dcfce7; color: #166534; font-weight: 600; }
+        .price-input { width: 88px !important; padding: 6px 8px !important; font-size: 0.88rem !important; text-align: right; font-weight: 500 !important; }
+        .status-bar { font-size: 0.82rem; color: var(--muted); margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .action-btn { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.82rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div>
+            <h1 id="ui-title">UNITAS (XUT) – Referenz-Index &amp; 3-Wege-Handelsrechner</h1>
+            <p id="ui-subtitle">Universal Trade &amp; Asset Standard | Open-Source Proof-of-Concept v1.0</p>
+        </div>
+        <div class="header-right">
+            <div class="lang-switch">
+                <button type="button" class="lang-btn active" id="btn-lang-de">&#127465;&#127466; DE</button>
+                <button type="button" class="lang-btn" id="btn-lang-en">&#127468;&#127463; EN</button>
+            </div>
+            <div class="badge-group">
+                <span class="badge" id="fx-status">Welt-Devisen: Lade...</span>
+                <span class="badge" id="power-status">Strombörse: Referenz</span>
+            </div>
+        </div>
+    </header>
+    <div class="main-grid">
+        <div class="card">
+            <h2 id="ui-card1-title">1. B2B-Handels- &amp; Dual-Pricing-Rechner</h2>
+            <p id="ui-card1-desc" style="font-size: 0.85rem; color: var(--muted);">Wählen Sie eine beliebige Weltwährung und geben Sie in einem der drei Felder einen Betrag ein – alle Werte passen sich sofort gegenseitig an.</p>
+            <div class="three-way-grid">
+                <div class="box-panel">
+                    <label for="from-currency" id="ui-lbl-from">Ausgangswährung</label>
+                    <select id="from-currency"></select>
+                    <input type="number" id="from-amount" value="100000" min="0" step="any">
+                </div>
+                <div class="arrow-sep">&#8644;</div>
+                <div class="box-panel unitas-center">
+                    <label for="xut-amount" id="ui-lbl-xut">Kaufkraft-Anker</label>
+                    <div class="unitas-label-box">UNITAS (XUT)</div>
+                    <input type="number" id="xut-amount" value="0" min="0" step="any">
+                </div>
+                <div class="arrow-sep">&#8644;</div>
+                <div class="box-panel">
+                    <label for="to-currency" id="ui-lbl-to">Zielwährung</label>
+                    <select id="to-currency"></select>
+                    <input type="number" id="to-amount" value="0" min="0" step="any">
+                </div>
+            </div>
+            <div class="rate-summary" id="rate-summary"></div>
+            <div class="savings-box" id="savings-display"></div>
+        </div>
+        <div class="card">
+            <h2 id="ui-card2-title">2. Dynamischer XUT-Referenzkorb (Index-Engine)</h2>
+            <p id="ui-card2-desc" style="font-size: 0.85rem; color: var(--muted);"><strong>1 XUT</strong> entspricht dem physischen Gesamtwert dieses Korbs. Ändern Sie einzelne Marktpreise, um Produktivitätssprünge live zu testen:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th id="ui-th-good">Referenzgut</th>
+                        <th id="ui-th-src">Datenquelle</th>
+                        <th id="ui-th-qty">Menge</th>
+                        <th id="ui-th-price" style="text-align: right;">Preis (USD)</th>
+                    </tr>
+                </thead>
+                <tbody id="basket-body"></tbody>
+            </table>
+            <div class="status-bar">
+                <span id="basket-usd-total">Basiswert 1 XUT: 1.0000 USD</span>
+                <div>
+                    <button type="button" class="action-btn" id="btn-refresh">Live-Daten neu laden</button>
+                    <button type="button" class="action-btn" id="btn-reset" style="background:#64748b;">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var currentLang = "de";
+var fxLiveCount = 0;
+var powerLiveAvg = null;
+
+var i18n = {
+    de: {
+        title: "UNITAS (XUT) – Referenz-Index & 3-Wege-Handelsrechner",
+        subtitle: "Universal Trade & Asset Standard | Open-Source Proof-of-Concept v1.0",
+        card1Title: "1. B2B-Handels- & Dual-Pricing-Rechner",
+        card1Desc: "Wählen Sie eine beliebige Weltwährung und geben Sie in einem der drei Felder einen Betrag ein – alle Werte passen sich sofort gegenseitig an.",
+        lblFrom: "Ausgangswährung",
+        lblXut: "Kaufkraft-Anker",
+        lblTo: "Zielwährung",
+        card2Title: "2. Dynamischer XUT-Referenzkorb (Index-Engine)",
+        card2Desc: "<strong>1 XUT</strong> entspricht dem physischen Gesamtwert dieses Korbs. Ändern Sie einzelne Marktpreise, um Produktivitätssprünge live zu testen:",
+        thGood: "Referenzgut",
+        thSrc: "Datenquelle",
+        thQty: "Menge",
+        thPrice: "Preis (USD)",
+        btnRefresh: "Live-Daten neu laden",
+        grpTop: "Wichtigste Handelswährungen",
+        grpAll: "Alle Weltwährungen (A–Z)",
+        fxLive: "Welt-Devisen: Live ({n} Währungen)",
+        fxOffline: "Welt-Devisen: Offline-Basis (24)",
+        pwLive: "Strombörse: Live ({p} €/MWh)",
+        pwOffline: "Strombörse: Referenz",
+        basketTotal: "Physischer Wert 1 XUT: {usd} USD ({eur} EUR)",
+        parity: "<strong>Aktuelle Parität:</strong> 1 {from} = {r1} XUT &nbsp;|&nbsp; 1 XUT = {r2} {to}<br><span style='color:var(--muted);'>Direkter Wechselkurs: 1 {from} = {r3} {to}</span>",
+        savTitle: "Kostenvorteil für diese Transaktion (Basis: {base} {curr}):",
+        savBank: "Klassischer Bankweg (inkl. FX-Spread): ca. {cost} {curr}",
+        savUnitas: "UNITAS-Netzwerk (inkl. Auto-FX-API): ca. {cost} {curr}",
+        savDirect: "Direkte Ersparnis: ca. {sav} {curr} ({pct} %)",
+        srcRef: "Referenzwert",
+        srcSim: "Simuliert",
+        goods: { power: "Strom (Großhandel Ø)", steel: "Warmgewalzter Stahl", copper: "Raffiniertes Kupfer", wheat: "Mahlweizen (Standard)", freight: "Container-Seefracht" }
+    },
+    en: {
+        title: "UNITAS (XUT) – Reference Index & 3-Way Trade Calculator",
+        subtitle: "Universal Trade & Asset Standard | Open-Source Proof-of-Concept v1.0",
+        card1Title: "1. B2B Trade & Dual-Pricing Calculator",
+        card1Desc: "Select any global currency and enter an amount in any of the three fields – all values automatically synchronize in real time.",
+        lblFrom: "Source Currency",
+        lblXut: "Purchasing Power Anchor",
+        lblTo: "Target Currency",
+        card2Title: "2. Dynamic XUT Reference Basket (Index Engine)",
+        card2Desc: "<strong>1 XUT</strong> equals the physical total value of this basket. Adjust individual market prices to simulate productivity gains live:",
+        thGood: "Reference Good",
+        thSrc: "Data Feed",
+        thQty: "Quantity",
+        thPrice: "Price (USD)",
+        btnRefresh: "Reload Live Feeds",
+        grpTop: "Major Trading Currencies",
+        grpAll: "All World Currencies (A–Z)",
+        fxLive: "Global FX Feed: Live ({n} Currencies)",
+        fxOffline: "Global FX Feed: Offline Base (24)",
+        pwLive: "Power Exchange: Live ({p} €/MWh)",
+        pwOffline: "Power Exchange: Reference",
+        basketTotal: "Physical Value 1 XUT: {usd} USD ({eur} EUR)",
+        parity: "<strong>Current Parity:</strong> 1 {from} = {r1} XUT &nbsp;|&nbsp; 1 XUT = {r2} {to}<br><span style='color:var(--muted);'>Direct Spot Rate: 1 {from} = {r3} {to}</span>",
+        savTitle: "Transaction Cost Advantage (Base: {base} {curr}):",
+        savBank: "Traditional Banking Route (incl. FX Spread): approx. {cost} {curr}",
+        savUnitas: "UNITAS Network (incl. Auto-FX API): approx. {cost} {curr}",
+        savDirect: "Direct Savings: approx. {sav} {curr} ({pct}%)",
+        srcRef: "Reference Feed",
+        srcSim: "Simulated",
+        goods: { power: "Electricity (Wholesale Avg)", steel: "Hot-Rolled Steel", copper: "Refined Copper", wheat: "Milling Wheat (Standard)", freight: "Container Sea Freight" }
+    }
+};
+
+var defaultBasket = [
+    { id: "power", sourceKey: "ref", customSource: "Energy-Charts", isLive: false, unit: "kWh", qty: 2.50, priceUsd: 0.085, step: 0.005 },
+    { id: "steel", sourceKey: "static", customSource: "World Bank Ref.", isLive: false, unit: "kg", qty: 0.30, priceUsd: 0.650, step: 0.020 },
+    { id: "copper", sourceKey: "static", customSource: "FRED / LME Ref.", isLive: false, unit: "kg", qty: 0.02, priceUsd: 9.500, step: 0.250 },
+    { id: "wheat", sourceKey: "static", customSource: "FRED / CME Ref.", isLive: false, unit: "kg", qty: 0.80, priceUsd: 0.250, step: 0.010 },
+    { id: "freight", sourceKey: "static", customSource: "FBX / WCI Ref.", isLive: false, unit: "TEU-km", qty: 2.00, priceUsd: 0.100, step: 0.010 }
+];
+var basket = JSON.parse(JSON.stringify(defaultBasket));
+
+var fxRatesPerUsd = {
+    USD: 1.00, EUR: 0.86, CHF: 0.81, GBP: 0.76, JPY: 152.0, CNY: 7.25,
+    BRL: 5.85, TRY: 47.75, INR: 85.50, ZAR: 17.80, MXN: 20.10, AED: 3.67,
+    SAR: 3.75, KRW: 1380.0, SGD: 1.33, AUD: 1.52, CAD: 1.39, SEK: 10.60,
+    NOK: 10.90, PLN: 4.02, NGN: 1620.0, EGP: 49.20, IDR: 15700.0, THB: 34.10
+};
+var priorityCurrencies = ["EUR", "USD", "CHF", "CNY", "BRL", "TRY", "INR", "ZAR", "JPY", "GBP", "AED", "SAR", "MXN", "NGN"];
+function getCurrencyLabel(code) {
+    try {
+        var dn = new Intl.DisplayNames([currentLang], { type: "currency" });
+        var name = dn.of(code);
+        return name && name !== code ? (name + " (" + code + ")") : code;
+    } catch (e) {
+        return code;
+    }
+}
+
+function populateCurrencyDropdowns(selectedFrom, selectedTo) {
+    var t = i18n[currentLang];
+    var fromSel = document.getElementById("from-currency");
+    var toSel = document.getElementById("to-currency");
+    var allCodes = Object.keys(fxRatesPerUsd);
+    var topList = priorityCurrencies.filter(function(c) { return allCodes.indexOf(c) !== -1; });
+    var restList = allCodes.filter(function(c) { return topList.indexOf(c) === -1; }).sort();
+
+    [fromSel, toSel].forEach(function(sel, idx) {
+        var targetDefault = idx === 0 ? (selectedFrom || "EUR") : (selectedTo || "TRY");
+        sel.innerHTML = "";
+        var grpTop = document.createElement("optgroup");
+        grpTop.label = t.grpTop;
+        topList.forEach(function(code) {
+            var opt = document.createElement("option");
+            opt.value = code;
+            opt.textContent = getCurrencyLabel(code);
+            if (code === targetDefault) opt.selected = true;
+            grpTop.appendChild(opt);
+        });
+        sel.appendChild(grpTop);
+
+        var grpAll = document.createElement("optgroup");
+        grpAll.label = t.grpAll;
+        restList.forEach(function(code) {
+            var opt = document.createElement("option");
+            opt.value = code;
+            opt.textContent = getCurrencyLabel(code);
+            if (code === targetDefault) opt.selected = true;
+            grpAll.appendChild(opt);
+        });
+        sel.appendChild(grpAll);
+    });
+}
+
+function setLanguage(lang) {
+    currentLang = lang;
+    var t = i18n[lang];
+    document.getElementById("btn-lang-de").classList.toggle("active", lang === "de");
+    document.getElementById("btn-lang-en").classList.toggle("active", lang === "en");
+
+    document.getElementById("ui-title").textContent = t.title;
+    document.getElementById("ui-subtitle").textContent = t.subtitle;
+    document.getElementById("ui-card1-title").textContent = t.card1Title;
+    document.getElementById("ui-card1-desc").textContent = t.card1Desc;
+    document.getElementById("ui-lbl-from").textContent = t.lblFrom;
+    document.getElementById("ui-lbl-xut").textContent = t.lblXut;
+    document.getElementById("ui-lbl-to").textContent = t.lblTo;
+    document.getElementById("ui-card2-title").textContent = t.card2Title;
+    document.getElementById("ui-card2-desc").innerHTML = t.card2Desc;
+    document.getElementById("ui-th-good").textContent = t.thGood;
+    document.getElementById("ui-th-src").textContent = t.thSrc;
+    document.getElementById("ui-th-qty").textContent = t.thQty;
+    document.getElementById("ui-th-price").textContent = t.thPrice;
+    document.getElementById("btn-refresh").textContent = t.btnRefresh;
+
+    var fxSt = document.getElementById("fx-status");
+    fxSt.textContent = fxLiveCount > 0 ? t.fxLive.replace("{n}", fxLiveCount) : t.fxOffline;
+    var pwSt = document.getElementById("power-status");
+    pwSt.textContent = powerLiveAvg !== null ? t.pwLive.replace("{p}", powerLiveAvg.toFixed(1)) : t.pwOffline;
+
+    var curFrom = document.getElementById("from-currency").value || "EUR";
+    var curTo = document.getElementById("to-currency").value || "TRY";
+    populateCurrencyDropdowns(curFrom, curTo);
+    renderBasket();
+    recalculate("xut");
+}
+
+function getXutValueInUsd() {
+    var total = 0;
+    for (var i = 0; i < basket.length; i++) total += basket[i].qty * basket[i].priceUsd;
+    return total > 0 ? total : 0.0001;
+}
+
+function fmt(num) {
+    return (!isFinite(num) || isNaN(num)) ? "0.00" : Number(num.toFixed(4)).toString();
+}
+
+function recalculate(mode) {
+    var t = i18n[currentLang];
+    var loc = currentLang === "de" ? "de-DE" : "en-US";
+    var xutUsd = getXutValueInUsd();
+    var xutEur = xutUsd * (fxRatesPerUsd.EUR || 0.86);
+    document.getElementById("basket-usd-total").textContent = t.basketTotal.replace("{usd}", xutUsd.toFixed(4)).replace("{eur}", xutEur.toFixed(4));
+
+    var fromCurr = document.getElementById("from-currency").value || "EUR";
+    var toCurr = document.getElementById("to-currency").value || "TRY";
+    var fromInput = document.getElementById("from-amount");
+    var xutInput = document.getElementById("xut-amount");
+    var toInput = document.getElementById("to-amount");
+    var usd = 0;
+
+    if (mode === "from") {
+        usd = (parseFloat(fromInput.value) || 0) / fxRatesPerUsd[fromCurr];
+        xutInput.value = fmt(usd / xutUsd);
+        toInput.value = fmt(usd * fxRatesPerUsd[toCurr]);
+    } else if (mode === "to") {
+        usd = (parseFloat(toInput.value) || 0) / fxRatesPerUsd[toCurr];
+        fromInput.value = fmt(usd * fxRatesPerUsd[fromCurr]);
+        xutInput.value = fmt(usd / xutUsd);
+    } else {
+        usd = (parseFloat(xutInput.value) || 0) * xutUsd;
+        fromInput.value = fmt(usd * fxRatesPerUsd[fromCurr]);
+        toInput.value = fmt(usd * fxRatesPerUsd[toCurr]);
+    }
+
+    var r1 = (1 / fxRatesPerUsd[fromCurr]) / xutUsd;
+    var r2 = xutUsd * fxRatesPerUsd[toCurr];
+    var r3 = fxRatesPerUsd[toCurr] / fxRatesPerUsd[fromCurr];
+    document.getElementById("rate-summary").innerHTML = t.parity
+        .replace(/\{from\}/g, fromCurr).replace(/\{to\}/g, toCurr)
+        .replace("{r1}", r1.toFixed(4)).replace("{r2}", r2.toFixed(4)).replace("{r3}", r3.toFixed(4));
+
+    var amtFrom = usd * fxRatesPerUsd[fromCurr];
+    var classicSwift = usd >= 1000 ? (38 * fxRatesPerUsd[fromCurr]) : (amtFrom * 0.02);
+    var unitasTx = usd >= 1000 ? (11 * fxRatesPerUsd[fromCurr]) : (amtFrom * 0.002);
+    var cCost = (amtFrom * 0.015) + classicSwift;
+    var uCost = (amtFrom * 0.0025) + unitasTx;
+    var sav = Math.max(0, cCost - uCost);
+    var pct = cCost > 0 ? Math.round((sav / cCost) * 100) : 0;
+    var opt = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
+
+    document.getElementById("savings-display").innerHTML =
+        "<strong>" + t.savTitle.replace("{base}", amtFrom.toLocaleString(loc, opt)).replace("{curr}", fromCurr) + "</strong><br>" +
+        t.savBank.replace("{cost}", cCost.toLocaleString(loc, opt)).replace("{curr}", fromCurr) + "<br>" +
+        t.savUnitas.replace("{cost}", uCost.toLocaleString(loc, opt)).replace("{curr}", fromCurr) + "<br>" +
+        "<span class='savings-highlight'>" + t.savDirect.replace("{sav}", sav.toLocaleString(loc, opt)).replace("{curr}", fromCurr).replace("{pct}", pct) + "</span>";
+}
+
+function renderBasket() {
+    var t = i18n[currentLang];
+    var tbody = document.getElementById("basket-body");
+    tbody.innerHTML = "";
+    basket.forEach(function(item, index) {
+        var tr = document.createElement("tr");
+        var cls = item.isLive ? "source-tag source-live" : "source-tag";
+        var srcLabel = item.sourceKey === "sim" ? t.srcSim : (item.sourceKey === "ref" ? t.srcRef : item.customSource);
+        tr.innerHTML = "<td><strong>" + t.goods[item.id] + "</strong></td><td><span class='" + cls + "'>" + srcLabel + "</span></td><td>" + item.qty.toFixed(2) + " " + item.unit + "</td><td style='text-align:right;'><input type='number' class='price-input' value='" + item.priceUsd.toFixed(3) + "' step='" + item.step + "' min='0'></td>";
+        tr.querySelector("input").addEventListener("input", function() {
+            var val = parseFloat(this.value);
+            if (!isNaN(val) && val >= 0) {
+                basket[index].priceUsd = val;
+                basket[index].isLive = false;
+                basket[index].sourceKey = "sim";
+                recalculate("xut");
+            }
+        });
+        tbody.appendChild(tr);
+    });
+}
+
+function fetchLiveFeeds() {
+    var t = i18n[currentLang];
+    var fxSt = document.getElementById("fx-status");
+    var pwSt = document.getElementById("power-status");
+    var curFrom = document.getElementById("from-currency").value || "EUR";
+    var curTo = document.getElementById("to-currency").value || "TRY";
+
+    fetch("https://er-api.com").then(function(r) { return r.json(); }).then(function(d) {
+        if (d && d.rates) {
+            ["RUB", "BYN", "IRR", "KPW", "SYP", "VES"].forEach(function(c) { delete d.rates[c]; });
+            fxRatesPerUsd = d.rates;
+            fxLiveCount = Object.keys(d.rates).length;
+            populateCurrencyDropdowns(curFrom, curTo);
+            fxSt.textContent = i18n[currentLang].fxLive.replace("{n}", fxLiveCount);
+            fxSt.style.background = "#16a34a";
+            recalculate("xut");
+        }
+    }).catch(function() {
+        fxSt.textContent = i18n[currentLang].fxOffline;
+        fxSt.style.background = "#d97706";
+    });
+
+    fetch("https://energy-charts.info").then(function(r) { return r.json(); }).then(function(d) {
+        if (d && Array.isArray(d.price)) {
+            var valid = d.price.filter(function(p) { return typeof p === "number" && !isNaN(p); });
+            if (valid.length > 0) {
+                powerLiveAvg = valid.reduce(function(a, b) { return a + b; }, 0) / valid.length;
+                var firstIdx = 0;
+                basket[firstIdx].priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
+                basket[firstIdx].isLive = true;
+                basket[firstIdx].sourceKey = "static";
+                basket[firstIdx].customSource = "Energy-Charts Live";
+                pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
+                pwSt.style.background = "#16a34a";
+                renderBasket();
+                recalculate("xut");
+            }
+        }
+    }).catch(function() {
+        pwSt.textContent = i18n[currentLang].pwOffline;
+        pwSt.style.background = "#d97706";
+    });
+}
+
+document.getElementById("btn-lang-de").addEventListener("click", function() { setLanguage("de"); });
+document.getElementById("btn-lang-en").addEventListener("click", function() { setLanguage("en"); });
+document.getElementById("from-amount").addEventListener("input", function() { recalculate("from"); });
+document.getElementById("xut-amount").addEventListener("input", function() { recalculate("xut"); });
+document.getElementById("to-amount").addEventListener("input", function() { recalculate("to"); });
+document.getElementById("from-currency").addEventListener("change", function() { recalculate("xut"); });
+document.getElementById("to-currency").addEventListener("change", function() { recalculate("xut"); });
+document.getElementById("btn-refresh").addEventListener("click", fetchLiveFeeds);
+document.getElementById("btn-reset").addEventListener("click", function() {
+    basket = JSON.parse(JSON.stringify(defaultBasket));
+    renderBasket();
+    recalculate("xut");
+    fetchLiveFeeds();
+});
+
+populateCurrencyDropdowns("EUR", "TRY");
+renderBasket();
+recalculate("from");
+fetchLiveFeeds();
+</script>
+</body>
+</html>
+

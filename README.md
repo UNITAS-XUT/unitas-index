@@ -3,8 +3,7 @@
 **A Neutral, Real-Economy Reference and Settlement Standard for Global Trade**  
 *Ein neutraler, realwirtschaftlicher Referenz- und Verrechnungsstandard für den globalen Handel*
 
-[![License: MIT](https://shields.io)](https://opensource.org)
-[![Status: Proof of Concept](https://shields.io)](https://github.io)
+**License:** [MIT Open Source](https://opensource.org) &nbsp;|&nbsp; **Status:** [Proof of Concept v1.0 (Live)](https://github.io) &nbsp;|&nbsp; **ISO Code:** `XUT`
 
 ---
 

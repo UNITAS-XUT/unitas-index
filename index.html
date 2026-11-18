@@ -45,6 +45,8 @@
         .price-input { width: 88px !important; padding: 6px 8px !important; font-size: 0.88rem !important; text-align: right; font-weight: 500 !important; }
         .status-bar { font-size: 0.82rem; color: var(--muted); margin-top: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .action-btn { background: var(--accent); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.82rem; }
+        .basket-scroll { max-height: 460px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; }
+        .sec-tag { display: inline-block; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; padding: 1px 5px; border-radius: 4px; background: #e2e8f0; color: #334155; margin-right: 4px; }
     </style>
 </head>
 <body>
@@ -94,17 +96,19 @@
         <div class="card">
             <h2 id="ui-card2-title">2. Dynamischer XUT-Referenzkorb (Index-Engine)</h2>
             <p id="ui-card2-desc" style="font-size: 0.85rem; color: var(--muted);"><strong>1 XUT</strong> entspricht dem physischen Gesamtwert dieses Korbs. Ändern Sie einzelne Marktpreise, um Produktivitätssprünge live zu testen:</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th id="ui-th-good">Referenzgut</th>
-                        <th id="ui-th-src">Datenquelle</th>
-                        <th id="ui-th-qty">Menge</th>
-                        <th id="ui-th-price" style="text-align: right;">Preis (USD)</th>
-                    </tr>
-                </thead>
-                <tbody id="basket-body"></tbody>
-            </table>
+            <div class="basket-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th id="ui-th-good">Referenzgut</th>
+                            <th id="ui-th-src">Datenquelle</th>
+                            <th id="ui-th-qty">Menge</th>
+                            <th id="ui-th-price" style="text-align: right;">Preis (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="basket-body"></tbody>
+                </table>
+            </div>
             <div class="status-bar">
                 <span id="basket-usd-total">Basiswert 1 XUT: 1.0000 USD</span>
                 <div>
@@ -129,8 +133,8 @@ var i18n = {
         lblFrom: "Ausgangswährung",
         lblXut: "Kaufkraft-Anker",
         lblTo: "Zielwährung",
-        card2Title: "2. Dynamischer XUT-Referenzkorb (Index-Engine)",
-        card2Desc: "<strong>1 XUT</strong> entspricht dem physischen Gesamtwert dieses Korbs. Ändern Sie einzelne Marktpreise, um Produktivitätssprünge live zu testen:",
+        card2Title: "2. Dynamischer 30-Güter-Referenzkorb (Index-Engine)",
+        card2Desc: "<strong>1 XUT</strong> entspricht dem physischen Gesamtwert dieser 30 Güter über 6 Sektoren. Ändern Sie einzelne Marktpreise für Stresstests:",
         thGood: "Referenzgut",
         thSrc: "Datenquelle",
         thQty: "Menge",
@@ -150,7 +154,18 @@ var i18n = {
         savDirect: "Direkte Ersparnis: ca. {sav} {curr} ({pct} %)",
         srcRef: "Referenzwert",
         srcSim: "Simuliert",
-        goods: { power: "Strom (Großhandel Ø)", steel: "Warmgewalzter Stahl", copper: "Raffiniertes Kupfer", wheat: "Mahlweizen (Standard)", freight: "Container-Seefracht" }
+        goods: {
+            power_eu: "Strom (Europa EPEX Ø)", power_us: "Strom (Nordamerika Ref.)", gas: "Erdgas (Henry Hub)",
+            oil: "Rohöl (Brent Benchmark)", diesel: "Kraftstoff (ULSD Diesel)", steel: "Warmgewalzter Stahl",
+            copper: "Raffiniertes Kupfer", aluminum: "Primäraluminium", iron: "Eisenerz (62% Fe)",
+            gold: "Industriegold", silver: "Industriesilber", platinum: "Platin (Katalysator)",
+            palladium: "Palladium (Elektronik)", lumber: "Nadelschnittholz", cement: "Zement & Klinker",
+            glass: "Flachglas (Industrie)", asphalt: "Asphalt & Bitumen", wheat: "Mahlweizen (CBOT)",
+            corn: "Mais (CBOT)", soybeans: "Sojabohnen (CBOT)", soyoil: "Soja- & Speiseöl",
+            sugar: "Rohzucker (ICE #11)", coffee: "Rohkaffee (Arabica)", cocoa: "Kakao (ICE)",
+            cotton: "Baumwolle (ICE #2)", rice: "Rohreis (CBOT)", sea_freight: "Container-Seefracht",
+            land_freight: "Schienen- & Straßengüter", cloud_cpu: "Cloud-Rechenleistung", cloud_storage: "Cloud-Datenspeicher"
+        }
     },
     en: {
         title: "UNITAS (XUT) – Reference Index & 3-Way Trade Calculator",
@@ -160,8 +175,8 @@ var i18n = {
         lblFrom: "Source Currency",
         lblXut: "Purchasing Power Anchor",
         lblTo: "Target Currency",
-        card2Title: "2. Dynamic XUT Reference Basket (Index Engine)",
-        card2Desc: "<strong>1 XUT</strong> equals the physical total value of this basket. Adjust individual market prices to simulate productivity gains live:",
+        card2Title: "2. Dynamic 30-Good Reference Basket (Index Engine)",
+        card2Desc: "<strong>1 XUT</strong> equals the physical total value of these 30 inputs across 6 sectors. Adjust market prices to simulate productivity gains:",
         thGood: "Reference Good",
         thSrc: "Data Feed",
         thQty: "Quantity",
@@ -181,16 +196,51 @@ var i18n = {
         savDirect: "Direct Savings: approx. {sav} {curr} ({pct}%)",
         srcRef: "Reference Feed",
         srcSim: "Simulated",
-        goods: { power: "Electricity (Wholesale Avg)", steel: "Hot-Rolled Steel", copper: "Refined Copper", wheat: "Milling Wheat (Standard)", freight: "Container Sea Freight" }
+        goods: {
+            power_eu: "Electricity (Europe EPEX)", power_us: "Electricity (US Wholesale Ref.)", gas: "Natural Gas (Henry Hub)",
+            oil: "Crude Oil (Brent Benchmark)", diesel: "Refined Diesel (ULSD)", steel: "Hot-Rolled Coil Steel",
+            copper: "Refined Copper", aluminum: "Primary Aluminum", iron: "Iron Ore (62% Fe)",
+            gold: "Industrial Gold", silver: "Industrial Silver", platinum: "Platinum (Catalyst)",
+            palladium: "Palladium (Electronics)", lumber: "Softwood Lumber", cement: "Cement & Clinker",
+            glass: "Flat Industrial Glass", asphalt: "Asphalt & Bitumen", wheat: "Milling Wheat (CBOT)",
+            corn: "Corn Benchmark (CBOT)", soybeans: "Soybeans (CBOT)", soyoil: "Soybean & Edible Oil",
+            sugar: "Raw Sugar (ICE #11)", coffee: "Arabica Coffee (ICE)", cocoa: "Cocoa Benchmark (ICE)",
+            cotton: "Cotton (ICE #2)", rice: "Rough Rice (CBOT)", sea_freight: "Container Sea Freight",
+            land_freight: "Rail & Road Freight", cloud_cpu: "Cloud Compute (vCPU)", cloud_storage: "Cloud Object Storage"
+        }
     }
 };
-
 var defaultBasket = [
-    { id: "power", sourceKey: "ref", customSource: "Energy-Charts", isLive: false, unit: "kWh", qty: 2.50, priceUsd: 0.085, step: 0.005 },
-    { id: "steel", sourceKey: "static", customSource: "World Bank Ref.", isLive: false, unit: "kg", qty: 0.30, priceUsd: 0.650, step: 0.020 },
-    { id: "copper", sourceKey: "static", customSource: "FRED / LME Ref.", isLive: false, unit: "kg", qty: 0.02, priceUsd: 9.500, step: 0.250 },
-    { id: "wheat", sourceKey: "static", customSource: "FRED / CME Ref.", isLive: false, unit: "kg", qty: 0.80, priceUsd: 0.250, step: 0.010 },
-    { id: "freight", sourceKey: "static", customSource: "FBX / WCI Ref.", isLive: false, unit: "TEU-km", qty: 2.00, priceUsd: 0.100, step: 0.010 }
+    { id: "power_eu", sec: "Energy", ticker: "power_eu", customSource: "EPEX Ref.", isLive: false, unit: "kWh", qty: 0.50, priceUsd: 0.110, step: 0.005 },
+    { id: "power_us", sec: "Energy", ticker: null, customSource: "EIA Ref.", isLive: false, unit: "kWh", qty: 0.50, priceUsd: 0.065, step: 0.005 },
+    { id: "gas", sec: "Energy", ticker: "gas", customSource: "NYMEX Ref.", isLive: false, unit: "MMBtu", qty: 0.015, priceUsd: 2.800, step: 0.100 },
+    { id: "oil", sec: "Energy", ticker: "oil", customSource: "ICE Ref.", isLive: false, unit: "L", qty: 0.10, priceUsd: 0.480, step: 0.010 },
+    { id: "diesel", sec: "Energy", ticker: "diesel", customSource: "NYMEX Ref.", isLive: false, unit: "L", qty: 0.08, priceUsd: 0.600, step: 0.010 },
+    { id: "steel", sec: "Industry", ticker: "steel", customSource: "CME Ref.", isLive: false, unit: "kg", qty: 0.08, priceUsd: 0.780, step: 0.020 },
+    { id: "copper", sec: "Industry", ticker: "copper", customSource: "COMEX Ref.", isLive: false, unit: "kg", qty: 0.005, priceUsd: 9.800, step: 0.200 },
+    { id: "aluminum", sec: "Industry", ticker: "aluminum", customSource: "COMEX Ref.", isLive: false, unit: "kg", qty: 0.02, priceUsd: 2.600, step: 0.050 },
+    { id: "iron", sec: "Industry", ticker: "iron", customSource: "SGX Ref.", isLive: false, unit: "kg", qty: 0.30, priceUsd: 0.105, step: 0.005 },
+    { id: "gold", sec: "Industry", ticker: "gold", customSource: "COMEX Ref.", isLive: false, unit: "g", qty: 0.0004, priceUsd: 85.00, step: 1.000 },
+    { id: "silver", sec: "Industry", ticker: "silver", customSource: "COMEX Ref.", isLive: false, unit: "g", qty: 0.03, priceUsd: 1.000, step: 0.050 },
+    { id: "platinum", sec: "Industry", ticker: "platinum", customSource: "NYMEX Ref.", isLive: false, unit: "g", qty: 0.001, priceUsd: 32.00, step: 0.500 },
+    { id: "palladium", sec: "Industry", ticker: "palladium", customSource: "NYMEX Ref.", isLive: false, unit: "g", qty: 0.001, priceUsd: 34.00, step: 0.500 },
+    { id: "lumber", sec: "Build", ticker: "lumber", customSource: "CME Ref.", isLive: false, unit: "m³", qty: 0.00015, priceUsd: 230.0, step: 5.000 },
+    { id: "cement", sec: "Build", ticker: null, customSource: "BLS PPI Ref.", isLive: false, unit: "kg", qty: 0.35, priceUsd: 0.140, step: 0.005 },
+    { id: "glass", sec: "Build", ticker: null, customSource: "BLS PPI Ref.", isLive: false, unit: "m²", qty: 0.004, priceUsd: 12.00, step: 0.500 },
+    { id: "asphalt", sec: "Build", ticker: null, customSource: "BLS PPI Ref.", isLive: false, unit: "kg", qty: 0.08, priceUsd: 0.450, step: 0.010 },
+    { id: "wheat", sec: "Agri", ticker: "wheat", customSource: "CBOT Ref.", isLive: false, unit: "kg", qty: 0.20, priceUsd: 0.210, step: 0.010 },
+    { id: "corn", sec: "Agri", ticker: "corn", customSource: "CBOT Ref.", isLive: false, unit: "kg", qty: 0.25, priceUsd: 0.170, step: 0.010 },
+    { id: "soybeans", sec: "Agri", ticker: "soybeans", customSource: "CBOT Ref.", isLive: false, unit: "kg", qty: 0.10, priceUsd: 0.370, step: 0.010 },
+    { id: "soyoil", sec: "Agri", ticker: "soyoil", customSource: "CBOT Ref.", isLive: false, unit: "kg", qty: 0.03, priceUsd: 0.980, step: 0.020 },
+    { id: "sugar", sec: "Agri", ticker: "sugar", customSource: "ICE Ref.", isLive: false, unit: "kg", qty: 0.06, priceUsd: 0.460, step: 0.010 },
+    { id: "coffee", sec: "Agri", ticker: "coffee", customSource: "ICE Ref.", isLive: false, unit: "kg", qty: 0.005, priceUsd: 6.200, step: 0.100 },
+    { id: "cocoa", sec: "Agri", ticker: "cocoa", customSource: "ICE Ref.", isLive: false, unit: "kg", qty: 0.004, priceUsd: 7.500, step: 0.100 },
+    { id: "cotton", sec: "Agri", ticker: "cotton", customSource: "ICE Ref.", isLive: false, unit: "kg", qty: 0.015, priceUsd: 1.550, step: 0.050 },
+    { id: "rice", sec: "Agri", ticker: "rice", customSource: "CBOT Ref.", isLive: false, unit: "kg", qty: 0.08, priceUsd: 0.330, step: 0.010 },
+    { id: "sea_freight", sec: "Logistics", ticker: null, customSource: "FBX / WCI Ref.", isLive: false, unit: "TEU-km", qty: 0.50, priceUsd: 0.090, step: 0.005 },
+    { id: "land_freight", sec: "Logistics", ticker: null, customSource: "BTS TSI Ref.", isLive: false, unit: "t-km", qty: 0.40, priceUsd: 0.110, step: 0.005 },
+    { id: "cloud_cpu", sec: "Digital", ticker: null, customSource: "Cloud On-Demand", isLive: false, unit: "vCPU-h", qty: 1.00, priceUsd: 0.042, step: 0.002 },
+    { id: "cloud_storage", sec: "Digital", ticker: null, customSource: "S3 Standard Ref.", isLive: false, unit: "TB-mo", qty: 0.002, priceUsd: 23.00, step: 0.500 }
 ];
 var basket = JSON.parse(JSON.stringify(defaultBasket));
 
@@ -201,6 +251,7 @@ var fxRatesPerUsd = {
     NOK: 10.90, PLN: 4.02, NGN: 1620.0, EGP: 49.20, IDR: 15700.0, THB: 34.10
 };
 var priorityCurrencies = ["EUR", "USD", "CHF", "CNY", "BRL", "TRY", "INR", "ZAR", "JPY", "GBP", "AED", "SAR", "MXN", "NGN"];
+
 function getCurrencyLabel(code) {
     try {
         var dn = new Intl.DisplayNames([currentLang], { type: "currency" });
@@ -245,7 +296,6 @@ function populateCurrencyDropdowns(selectedFrom, selectedTo) {
         sel.appendChild(grpAll);
     });
 }
-
 function setLanguage(lang) {
     currentLang = lang;
     var t = i18n[lang];
@@ -371,14 +421,14 @@ function renderBasket() {
     basket.forEach(function(item, index) {
         var tr = document.createElement("tr");
         var cls = item.isLive ? "source-tag source-live" : "source-tag";
-        var srcLabel = item.sourceKey === "sim" ? t.srcSim : (item.sourceKey === "ref" ? t.srcRef : item.customSource);
-        tr.innerHTML = "<td><strong>" + t.goods[item.id] + "</strong></td><td><span class='" + cls + "'>" + srcLabel + "</span></td><td>" + item.qty.toFixed(2) + " " + item.unit + "</td><td style='text-align:right;'><input type='number' class='price-input' value='" + item.priceUsd.toFixed(3) + "' step='" + item.step + "' min='0'></td>";
+        var srcLabel = item.isSim ? t.srcSim : item.customSource;
+        tr.innerHTML = "<td><span class='sec-tag'>" + item.sec + "</span><strong>" + t.goods[item.id] + "</strong></td><td><span class='" + cls + "'>" + srcLabel + "</span></td><td>" + item.qty + " " + item.unit + "</td><td style='text-align:right;'><input type='number' class='price-input' value='" + item.priceUsd.toFixed(4) + "' step='" + item.step + "' min='0'></td>";
         tr.querySelector("input").addEventListener("input", function() {
             var val = parseFloat(this.value);
             if (!isNaN(val) && val >= 0) {
                 basket[index].priceUsd = val;
                 basket[index].isLive = false;
-                basket[index].sourceKey = "sim";
+                basket[index].isSim = true;
                 recalculate("xut");
             }
         });
@@ -407,11 +457,10 @@ function fetchLiveFeeds() {
             }
             if (d && d.power_live && d.power_eur_mwh !== null) {
                 powerLiveAvg = d.power_eur_mwh;
-                var powerItem = basket.find(function(x) { return x.id === "power"; });
+                var powerItem = basket.find(function(x) { return x.id === "power_eu"; });
                 if (powerItem) {
                     powerItem.priceUsd = Math.max(0.001, powerLiveAvg / 1000) / (fxRatesPerUsd.EUR || 0.86);
                     powerItem.isLive = true;
-                    powerItem.sourceKey = "static";
                     powerItem.customSource = "EPEX / aWATTar Live";
                 }
                 pwSt.textContent = i18n[currentLang].pwLive.replace("{p}", powerLiveAvg.toFixed(1));
@@ -420,23 +469,14 @@ function fetchLiveFeeds() {
                 pwSt.textContent = i18n[currentLang].pwOffline;
                 pwSt.style.background = "#d97706";
             }
-            if (d && d.copper_live && d.copper_usd_kg !== null) {
-                var copperItem = basket.find(function(x) { return x.id === "copper"; });
-                if (copperItem) {
-                    copperItem.priceUsd = d.copper_usd_kg;
-                    copperItem.isLive = true;
-                    copperItem.sourceKey = "static";
-                    copperItem.customSource = "FRED / IMF Live";
-                }
-            }
-            if (d && d.wheat_live && d.wheat_usd_kg !== null) {
-                var wheatItem = basket.find(function(x) { return x.id === "wheat"; });
-                if (wheatItem) {
-                    wheatItem.priceUsd = d.wheat_usd_kg;
-                    wheatItem.isLive = true;
-                    wheatItem.sourceKey = "static";
-                    wheatItem.customSource = "FRED / IMF Live";
-                }
+            if (d && d.commodities) {
+                basket.forEach(function(item) {
+                    if (item.ticker && d.commodities[item.ticker] > 0) {
+                        item.priceUsd = d.commodities[item.ticker];
+                        item.isLive = true;
+                        item.customSource = "Exchange Live";
+                    }
+                });
             }
             renderBasket();
             recalculate("xut");
@@ -471,4 +511,3 @@ fetchLiveFeeds();
 </script>
 </body>
 </html>
-

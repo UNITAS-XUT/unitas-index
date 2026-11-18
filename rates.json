@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-18 02:50 UTC",
+  "updated_utc": "2026-11-18 06:57 UTC",
   "fx_live": true,
   "power_live": true,
   "copper_live": true,
@@ -167,7 +167,7 @@
     "ZWG": 26.6142,
     "ZWL": 26.6142
   },
-  "power_eur_mwh": 152.53,
-  "copper_usd_kg": 13.0778,
-  "wheat_usd_kg": 0.2231
+  "power_eur_mwh": 165.7,
+  "copper_usd_kg": 12.8551,
+  "wheat_usd_kg": 0.2223
 }

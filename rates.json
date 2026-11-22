@@ -1,5 +1,5 @@
 {
-  "updated_utc": "2026-11-22 00:39 UTC",
+  "updated_utc": "2026-11-22 06:52 UTC",
   "fx_live": true,
   "power_live": true,
   "live_commodities_count": 21,
@@ -171,7 +171,7 @@
     "ZWG": 26.5872,
     "ZWL": 26.5872
   },
-  "power_eur_mwh": 204.53,
+  "power_eur_mwh": 209.79,
   "commodities": {
     "gas": 3.748,
     "oil": 0.5658,
